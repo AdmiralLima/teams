@@ -80,6 +80,6 @@ public class Attacks
      */
     public static boolean cowDenial() throws GameActionException
     {
-    	
+    	return false;
     }
 }

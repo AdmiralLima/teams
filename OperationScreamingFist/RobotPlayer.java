@@ -25,7 +25,7 @@ public class RobotPlayer {
             if (rc.getType() == RobotType.HQ) { // if robot is the HQ
                 try {
                     if (rc.isActive()) {
-                        HQ.attackRandom(); // try to attack
+                        Attacks.attackRandom(); // try to attack
                         HQ.spawnTowardEnemy(); // try to spawn
                     }
                 } catch (GameActionException e1) {e1.printStackTrace(); System.out.println("HQ Exception");}
