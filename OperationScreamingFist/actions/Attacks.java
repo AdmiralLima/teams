@@ -51,6 +51,29 @@ public class Attacks
     }
     
     /**
+     * attack a random enemy but not the enemy HQ
+     * 
+     * @param Robot[] nearbyEnemies
+     * @return boolean - successful attack
+     * @throws GameActionException
+     */
+    public static boolean attackRandomNotHQ(Robot[] nearbyEnemies) throws GameActionException 
+    {
+        if (nearbyEnemies.length > 0) 
+        {
+        	for (Robot bad : nearbyEnemies)
+        	{
+        		if (!rc.senseRobotInfo(bad).type.equals(RobotType.HQ))
+        		{
+                    rc.attackSquare(rc.senseRobotInfo(nearbyEnemies[0]).location);
+                    return true;
+        		}
+        	}
+        }
+        return false;
+    }
+    
+    /**
      * attack an enemy soldier within range
      * 
      * @return boolean - successful attack
