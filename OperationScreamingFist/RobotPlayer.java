@@ -2,6 +2,8 @@ package OperationScreamingFist;
 
 import battlecode.common.*;
 
+import OperationScreamingFist.actions.*;
+
 import java.util.*;
 
 public class RobotPlayer {
@@ -11,12 +13,24 @@ public class RobotPlayer {
         rand = new Random();
         Direction[] directions = {Direction.NORTH, Direction.NORTH_EAST, Direction.EAST, Direction.SOUTH_EAST, Direction.SOUTH, Direction.SOUTH_WEST, Direction.WEST, Direction.NORTH_WEST};
         
-        int width = rc.getMapWidth();
-        int height = rc.getMapHeight();
-        int area = width*height;
+        //int width = rc.getMapWidth();
+        //int height = rc.getMapHeight();
+        //int area = width*height;
         
         while (true) {
             if (rc.getType() == RobotType.HQ) { // if robot is the HQ
+                Robot[] nearbyEnemies = {};
+                try {
+                    nearbyEnemies = rc.senseNearbyGameObjects(Robot.class,rc.senseRobotInfo(rc.getRobot()).type.attackRadiusMaxSquared,rc.getTeam().opponent());
+                } catch (GameActionException e1) {
+                    e1.printStackTrace();
+                }
+                if (rc.isActive() && nearbyEnemies.length > 0) 
+                {
+                    try {
+                        rc.attackSquare(rc.senseRobotInfo(nearbyEnemies[0]).location);
+                    } catch (GameActionException e) {e.printStackTrace(); System.out.println("HQ attack exception");}
+                }
                 if (rc.isActive() && rc.senseRobotCount() < GameConstants.MAX_ROBOTS) {
                     Direction spawnDir = Direction.EAST;
                     try {
@@ -56,7 +70,7 @@ public class RobotPlayer {
                         }
                     }
                     // move away from the friendly HQ
-                    else if (action < (800 + area/10)) {
+                    else if (action < (800)) {
                         Direction fromHQ = rc.getLocation().directionTo(rc.senseHQLocation()).opposite();
                         if (rc.canMove(fromHQ)) {
                             try {
