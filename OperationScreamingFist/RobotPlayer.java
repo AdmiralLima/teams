@@ -8,12 +8,15 @@ public class RobotPlayer {
     
     public static RobotController rc;
     public static Random rand = new Random();
-    public static Direction[] directions = {Direction.NORTH, Direction.NORTH_EAST, Direction.EAST, Direction.SOUTH_EAST, Direction.SOUTH, Direction.SOUTH_WEST, Direction.WEST, Direction.NORTH_WEST};
+    public static int maxMapChannel;
+    public static int mapHeight;
     
     public static void run(RobotController rcin) {
         ///////// initialise stuff /////////
         rc = rcin;
         rand.setSeed(rc.getRobot().getID());
+        maxMapChannel = rc.getMapWidth();
+        mapHeight = rc.getMapHeight();
         ////////////////////////////////////
         
         //int width = rc.getMapWidth();
@@ -22,17 +25,13 @@ public class RobotPlayer {
         
         
         while (true) {
-            if (rc.getType() == RobotType.HQ) { // if robot is the HQ
-                try {
-                    if (rc.isActive()) {
-                        Attacks.attackRandom(); // try to attack
-                        HQ.spawnTowardEnemy(); // try to spawn
-                    }
-                } catch (GameActionException e1) {e1.printStackTrace(); System.out.println("HQ Exception");}
-                
-            }
-            else if (rc.getType() == RobotType.SOLDIER) { // if robot is a soldier
-                if (rc.isActive()) { // check that soldier is still active
+            if (rc.isActive()) {
+                if (rc.getType() == RobotType.HQ) { // if robot is the HQ
+                    try {
+                        Tactic.hqSpawnAndAttack();
+                    } catch (GameActionException e1) {e1.printStackTrace(); System.out.println("HQ Exception");}
+                }
+                else if (rc.getType() == RobotType.SOLDIER) { // if robot is a soldier
                     try {
                         Tactic.soldierPASTRmassacre();
                     } catch (GameActionException e) {e.printStackTrace(); System.out.println("Soldier exception");}
