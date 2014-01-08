@@ -47,6 +47,10 @@ public class RobotPlayer {
                         else if (action < 600) {
                             Soldier.randomMove();
                         }
+                        // suicide bomb enemy PASTRs
+                        else if (action < 700) {
+                            Soldier.suicideBomb();
+                        }
                         // move away from the friendly HQ
                         else if (action < (800)) {
                             Soldier.moveAwayFromHQ();

@@ -80,6 +80,18 @@ public class Soldier {
         }
     }
     
+    public static void suicideBomb() throws GameActionException {
+        MapLocation[] pastrs = rc.sensePastrLocations(rc.getTeam().opponent());
+        for (MapLocation pastr : pastrs) {
+            if (rc.getLocation().isAdjacentTo(pastr)) {
+                rc.selfDestruct();
+            }
+        }
+        if (pastrs.length > 0) {
+            rc.move(rc.getLocation().directionTo(pastrs[0]));
+        }
+    }
+    
     
     ////////////UTILITIES/////////////
     
