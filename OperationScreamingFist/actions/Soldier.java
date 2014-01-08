@@ -10,6 +10,10 @@ public class Soldier {
     private static Random rand = RobotPlayer.rand;
     private static Direction[] directions = RobotPlayer.directions;
     
+    public static void broadcastLocation() {
+        
+    }
+    
     /**
      * attacks a random nearby enemy
      * 
@@ -70,5 +74,7 @@ public class Soldier {
             rc.move(moveDirection);
         }
     }
+    
+    
 
 }
