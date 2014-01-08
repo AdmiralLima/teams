@@ -48,5 +48,9 @@ public class Tactic {
         }
     }
     
+    public static void soldierPASTRmassacre() throws GameActionException
+    {
+        Soldier.suicideBomb();
+    }
 
 }

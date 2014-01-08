@@ -215,16 +215,4 @@ public class Attacks
     	}
     	return false;
     }
-    
-    /**
-     * kills the cows around an enemy pasture
-     * 
-     * @returns boolean - successful attack
-     * @throws GameActionsException
-     */
-    public static boolean cowDenial() throws GameActionException
-    {
-    	// Not Done
-    	return false;
-    }
 }

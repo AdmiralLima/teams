@@ -42,8 +42,21 @@ public class Soldier {
      * @throws GameActionException
      */
     public static void move(Direction dir) throws GameActionException {
-        if (rc.canMove(dir)) {
+        if (rc.canMove(dir)) 
+        {
             rc.move(dir);
+        }
+        else
+        {
+        	for (int i = 0; i < 8; i++)
+        	{
+        		int randDir = rand.nextInt(8);
+                if (rc.canMove(directions[randDir])) 
+                {
+                    rc.move(directions[randDir]);
+                    break;
+                }
+        	}
         }
     }
     
