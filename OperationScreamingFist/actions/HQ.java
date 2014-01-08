@@ -1,40 +1,66 @@
 package OperationScreamingFist.actions;
 
-import java.util.Random;
 import OperationScreamingFist.RobotPlayer;
 import battlecode.common.*;
 
-public class HQ {
+public class HQ 
+{
     
     private static RobotController rc = RobotPlayer.rc;
-    private static Random rand = RobotPlayer.rand;
     private static Direction[] directions = RobotPlayer.directions;
-
-    /**
-     * attacks enemies within range of the HQ
-     * 
-     * @param rc
-     * @throws GameActionException
-     */
-    public static void attackRandom() throws GameActionException {
-        Robot[] nearbyEnemies = rc.senseNearbyGameObjects(Robot.class,rc.senseRobotInfo(rc.getRobot()).type.attackRadiusMaxSquared,rc.getTeam().opponent());
-        if (nearbyEnemies.length > 0) {
-            rc.attackSquare(rc.senseRobotInfo(nearbyEnemies[0]).location);
-        }
-    }
     
     /**
-     * spawns soldiers near HQ
-     * @param rc
+     * tries to spawn a soldier in the direction of the enemy HQ
+     * 
+     * @return boolean - successful spawn
      * @throws GameActionException
      */
-    public static void spawnTowardEnemy() throws GameActionException {
-        if (rc.senseRobotCount() < GameConstants.MAX_ROBOTS) {
+    public static boolean spawnTowardEnemy() throws GameActionException 
+    {
+        if (rc.senseRobotCount() < GameConstants.MAX_ROBOTS) 
+        {
             Direction spawnDir = rc.getLocation().directionTo(rc.senseEnemyHQLocation());
-            if (rc.senseObjectAtLocation(rc.getLocation().add(spawnDir)) == null) {
-                rc.spawn(spawnDir);
+            if (rc.senseObjectAtLocation(rc.getLocation().add(spawnDir)) == null) 
+            {
+                rc.spawn(spawnDir);	
+                return true;
             }
         }
+        return false;
     }
     
+    /**
+     * tries to spawn a soldier in the given direction
+     * 
+     * @return boolean - successful spawn
+     * @param int - direction of spawn
+     * @throws GameActionException
+     */
+    public static boolean spawnDirectional(int dir) throws GameActionException
+    {
+    	if (rc.senseObjectAtLocation(rc.getLocation().add(directions[dir])) == null && dir <= 0 && dir <= 8) 
+        {
+            rc.spawn(directions[dir]);
+            return true;
+        }
+    	return false;
+    }
+    
+    /**
+     * tries to spawn a soldier in any possible direction
+     * 
+     * @return boolean - successful spawn
+     * @throws GameActionException
+     */
+    public static boolean spawn() throws GameActionException
+    {
+    	for (int i = 0; i <= 8; i++)
+    	{
+    		if (spawnDirectional(i))
+    		{
+                return true;
+    		}
+    	}
+    	return false;
+    }
 }
