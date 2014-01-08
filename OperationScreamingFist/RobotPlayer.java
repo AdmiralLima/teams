@@ -9,21 +9,28 @@ public class RobotPlayer {
     
     public static RobotController rc;
     public static Random rand = new Random();
-    public static int maxMapChannel;
+    public static int mapWidth;
     public static int mapHeight;
+    public static int maxMapChannel;
     
     public static void run(RobotController rcin) {
         ///////// initialise stuff /////////
         rc = rcin;
         rand.setSeed(rc.getRobot().getID());
-        maxMapChannel = rc.getMapWidth();
+        mapWidth = rc.getMapWidth();
         mapHeight = rc.getMapHeight();
+        maxMapChannel = mapWidth * mapHeight;
         ////////////////////////////////////
         
-        //int width = rc.getMapWidth();
-        //int height = rc.getMapHeight();
-        //int area = width*height;
+
         MapLocation lastSquare = new MapLocation(0,0);
+        if (rc.getType() == RobotType.HQ) {
+            try {
+                MapBuilder.hqBuildMap();
+                System.out.println(MapBuilder.stringMap());
+            } catch (GameActionException e) {e.printStackTrace();}
+        }
+        
         while (true) {
             if (rc.isActive()) {
                 if (rc.getType() == RobotType.HQ) { // if robot is the HQ
