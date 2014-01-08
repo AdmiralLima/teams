@@ -54,7 +54,7 @@ public class Tactic {
 
     public static void hqSpawnAndAttack() throws GameActionException {
         boolean done = false;
-        done = Attacks.attackRandom(); // try to attack
+        done = Attacks.attackRandomNotHQ(); // try to attack
         if (done) {
             rc.yield();
         } else {

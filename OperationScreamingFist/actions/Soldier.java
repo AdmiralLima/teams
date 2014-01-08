@@ -40,23 +40,13 @@ public class Soldier {
      * @param dir
      * @throws GameActionException
      */
-    public static void move(Direction dir) throws GameActionException {
+    public static boolean move(Direction dir) throws GameActionException {
         if (rc.canMove(dir)) 
         {
             rc.move(dir);
+            return true;
         }
-        else
-        {
-        	for (int i = 0; i < 8; i++)
-        	{
-        		int randDir = rand.nextInt(8);
-                if (rc.canMove(Util.directions[randDir])) 
-                {
-                    rc.move(Util.directions[randDir]);
-                    break;
-                }
-        	}
-        }
+        return false;
     }
     
     /**
