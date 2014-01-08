@@ -3,8 +3,11 @@ package OperationScreamingFist.actions;
 import OperationScreamingFist.RobotPlayer;
 import battlecode.common.*;
 
-public class HQ 
-{
+public class HQ {
+    
+    /**
+     * HQ contains basic actions that only the HQ can undertake, i.e. spawning 
+     */
     
     private static RobotController rc = RobotPlayer.rc;
     private static Direction[] directions = RobotPlayer.directions;

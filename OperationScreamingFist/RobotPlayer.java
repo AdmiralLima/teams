@@ -34,7 +34,7 @@ public class RobotPlayer {
             else if (rc.getType() == RobotType.SOLDIER) { // if robot is a soldier
                 if (rc.isActive()) { // check that soldier is still active
                     try {
-                        Tactic.random();
+                        Tactic.soldierRandom();
                     } catch (GameActionException e) {e.printStackTrace(); System.out.println("Soldier exception");}
                 }
             }

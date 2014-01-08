@@ -6,13 +6,18 @@ import battlecode.common.*;
 
 public class Soldier {
     
+    /**
+     * Soldier contains basic actions that only Soldiers can undertake, i.e. moving,
+     * sneaking, constructing PASTRs and Noisetowers, self-destructing
+     */
+    
     private static RobotController rc = RobotPlayer.rc;
     private static Random rand = RobotPlayer.rand;
     private static Direction[] directions = RobotPlayer.directions;
     
     public static void broadcastLocation() throws GameActionException {
         rc.setIndicatorString(0, "read ID: "+rc.readBroadcast(0));
-        rc.broadcast(0, locToInt(rc.getLocation()));
+        rc.broadcast(0, Util.locToInt(rc.getLocation()));
     }
     
     /**
@@ -89,18 +94,5 @@ public class Soldier {
             Soldier.move(rc.getLocation().directionTo(pastrs[0]));
         }
     }
-    
-    
-    ////////////UTILITIES/////////////
-    
-    private static int locToInt(MapLocation m) {
-        return (m.x*100 +m.y);
-    }
-    
-    private static MapLocation intToLoc(int i) {
-        return new MapLocation(i/100, i%100);
-    }
-    
-    
 
 }
