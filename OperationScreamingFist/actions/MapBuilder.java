@@ -36,7 +36,7 @@ public class MapBuilder {
     */
     public static void hqBuildMap() throws GameActionException {
         int value = 1;
-        for (int x = 0; x < mapWidht; x++) {
+        for (int x = 0; x < mapWidth; x++) {
             for (int y = 0; y < mapHeight; y++) {
                 MapLocation m = new MapLocation(x,y);
                 TerrainTile tile = rc.senseTerrainTile(m);
@@ -52,18 +52,18 @@ public class MapBuilder {
     }
     
     public static String stringMap() throws GameActionException {
-        String[] map = new String[mapHeight];
+        String[] map = new String[mapWidth];
         int terrain = 1;
-        for (int x = 0; x < mapHeight; x++) {
+        for (int y = 0; y < mapHeight; y++) {
             String row = "";
-            for (int y = 0; y < mapWidth; y++) {
+            for (int x = 0; x < mapWidth; x++) {
                 MapLocation m = new MapLocation(x,y);
                 terrain = Util.readMap(m);
                 row = row.concat(String.valueOf(terrain));
             }
-            map[x] = row;
+            map[y] = row;
         }
-        String toPrint = "";
+        String toPrint = "\n";
         for (String row : map) {
             toPrint = toPrint.concat(row);
             toPrint = toPrint.concat("\n");
