@@ -47,6 +47,11 @@ public class Tactic {
         }
     }
     
+    public static void soldierPASTRmassacre() throws GameActionException
+    {
+        Soldier.suicideBomb();
+    }
+
     public static void hqSpawnAndAttack() throws GameActionException {
         boolean done = false;
         done = Attacks.attackRandom(); // try to attack
@@ -56,6 +61,4 @@ public class Tactic {
             done = HQ.spawnTowardEnemy(); // try to spawn
         }
     }
-    
-
 }

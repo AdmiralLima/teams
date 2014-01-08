@@ -37,7 +37,7 @@ public class RobotPlayer {
                 }
                 else if (rc.getType() == RobotType.SOLDIER) { // if robot is a soldier
                     try {
-                        Tactic.soldierRandom();
+                        Tactic.soldierPASTRmassacre();
                     } catch (GameActionException e) {e.printStackTrace(); System.out.println("Soldier exception");}
                 }
             }
