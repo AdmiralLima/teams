@@ -120,6 +120,30 @@ public class Attacks
     }
     
     /**
+     * attacks an enemy of the given type
+     * 
+     * @param RobotType killType
+     * @return boolean - successful attack
+     * @throws GameActionException
+     */
+    public static boolean attackType(RobotType killType) throws GameActionException
+    {
+        Robot[] nearbyEnemies = rc.senseNearbyGameObjects(Robot.class,rc.senseRobotInfo(rc.getRobot()).type.attackRadiusMaxSquared,rc.getTeam().opponent());
+        if (nearbyEnemies.length > 0) 
+        {
+        	for (Robot bad : nearbyEnemies)
+        	{
+        		if (rc.senseRobotInfo(bad).type.equals(killType))
+        		{
+                    rc.attackSquare(rc.senseRobotInfo(nearbyEnemies[0]).location);
+                    return true;
+        		}
+        	}
+        }
+        return false;
+    }
+    
+    /**
      * attacks the given location
      * 
      * @return boolean - successful attack
@@ -138,17 +162,23 @@ public class Attacks
     /**
      * attacks the random tile selected within range with the most cows
      * 
+     * @param int intensity - how many squares to compare
      * @return boolean - successful attack
      * @throws GameActionException
      */
-    public static boolean cowMassacre() throws GameActionException
+    public static boolean cowMassacre(int intensity) throws GameActionException
     {
     	int maxCow = 0;
     	MapLocation maxLoc = new MapLocation(0,0);
-    	for (int i = 0; i < 4; i++)
+    	for (int i = 0; i <= intensity; i++)
     	{
     		int dir = rand.nextInt(8);
-    		MapLocation Loc = rc.getLocation().add(directions[dir]).add(directions[dir]);
+    		int dis = rand.nextInt((int) Math.sqrt(rc.senseRobotInfo(rc.getRobot()).type.attackRadiusMaxSquared)) + 1;
+    		MapLocation Loc = rc.getLocation();
+    		for (int j = 1; j <= dis; i++)
+    		{
+    			Loc = Loc.add(directions[dir]);
+    		}
     		int cows = (int) rc.senseCowsAtLocation(Loc);
     		if (cows > maxCow)
     		{
