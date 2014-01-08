@@ -6,13 +6,23 @@ import battlecode.common.*;
 public class Util {
     
     public static RobotController rc = RobotPlayer.rc;
+    public static int mapWidth = RobotPlayer.mapWidth;
     
     /**
      * Util contains very basic utility methods, constants and other miscellaneous things that 
      * don't fit well elsewhere
+     * @throws GameActionException 
      */
     
     ///////METHODS/////////
+    
+    public static int readMap(MapLocation m) throws GameActionException {
+        return rc.readBroadcast(locToInt(m));
+    }
+    
+    public static void writeMap(MapLocation m, int msg) throws GameActionException {
+        rc.broadcast(locToInt(m), msg);
+    }
     
     public static boolean isRobot(GameObject g) {
         return g.getClass().equals(Robot.class);
@@ -23,11 +33,11 @@ public class Util {
     }
     
     public static int locToInt(MapLocation m) {
-        return (m.x*100 +m.y);
+        return (m.x + mapWidth*m.y);
     }
     
     public static MapLocation intToLoc(int i) {
-        return new MapLocation(i/100, i%100);
+        return new MapLocation(i%mapWidth, i/mapWidth);
     }
     
     ///////CONSTANTS///////
