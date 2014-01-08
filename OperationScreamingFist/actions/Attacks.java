@@ -12,7 +12,7 @@ public class Attacks
     public static Direction[] directions = {Direction.NORTH, Direction.NORTH_EAST, Direction.EAST, Direction.SOUTH_EAST, Direction.SOUTH, Direction.SOUTH_WEST, Direction.WEST, Direction.NORTH_WEST};
     
     /**
-     * attack an enemy within range of the HQ
+     * attack an enemy within range
      * 
      * @return boolean - successful attack
      * @throws GameActionException
@@ -24,6 +24,98 @@ public class Attacks
         {
             rc.attackSquare(rc.senseRobotInfo(nearbyEnemies[0]).location);
             return true;
+        }
+        return false;
+    }
+    
+    /**
+     * attack a random enemy but not the enemy HQ
+     * 
+     * @return boolean - successful attack
+     * @throws GameActionException
+     */
+    public static boolean attackRandomNotHQ() throws GameActionException 
+    {
+        Robot[] nearbyEnemies = rc.senseNearbyGameObjects(Robot.class,rc.senseRobotInfo(rc.getRobot()).type.attackRadiusMaxSquared,rc.getTeam().opponent());
+        if (nearbyEnemies.length > 0) 
+        {
+        	for (Robot bad : nearbyEnemies)
+        	{
+        		if (!rc.senseRobotInfo(bad).type.equals(RobotType.HQ))
+        		{
+                    rc.attackSquare(rc.senseRobotInfo(nearbyEnemies[0]).location);
+                    return true;
+        		}
+        	}
+        }
+        return false;
+    }
+    
+    /**
+     * attack an enemy soldier within range
+     * 
+     * @return boolean - successful attack
+     * @throws GameActionException
+     */
+    public static boolean attackSOLDIER() throws GameActionException
+    {
+        Robot[] nearbyEnemies = rc.senseNearbyGameObjects(Robot.class,rc.senseRobotInfo(rc.getRobot()).type.attackRadiusMaxSquared,rc.getTeam().opponent());
+        if (nearbyEnemies.length > 0) 
+        {
+        	for (Robot bad : nearbyEnemies)
+        	{
+        		if (rc.senseRobotInfo(bad).type.equals(RobotType.SOLDIER))
+        		{
+                    rc.attackSquare(rc.senseRobotInfo(nearbyEnemies[0]).location);
+                    return true;
+        		}
+        	}
+        }
+        return false;
+    }
+    
+    /**
+     * attacks an enemy pasture within range
+     * 
+     * @return boolean - successful attack
+     * @throws GameActionException
+     */
+    public static boolean attackPASTR() throws GameActionException
+    {
+        Robot[] nearbyEnemies = rc.senseNearbyGameObjects(Robot.class,rc.senseRobotInfo(rc.getRobot()).type.attackRadiusMaxSquared,rc.getTeam().opponent());
+        if (nearbyEnemies.length > 0) 
+        {
+        	for (Robot bad : nearbyEnemies)
+        	{
+        		if (rc.senseRobotInfo(bad).type.equals(RobotType.PASTR))
+        		{
+                    rc.attackSquare(rc.senseRobotInfo(nearbyEnemies[0]).location);
+                    return true;
+        		}
+        	}
+        }
+        return false;
+    }
+    
+    /**
+     *  attacks an enemy noise tower within range
+     *  
+     *  @return boolean - successful attack 
+     *  @throws GameActionException
+     */
+    public static boolean attackNOISE() throws GameActionException
+    {
+        Robot[] nearbyEnemies = rc.senseNearbyGameObjects(Robot.class,rc.senseRobotInfo(rc.getRobot()).type.attackRadiusMaxSquared,rc.getTeam().opponent());
+        if (nearbyEnemies.length > 0) 
+        {
+        	for (Robot bad : nearbyEnemies)
+        	{
+        		if (rc.senseRobotInfo(bad).type.equals(RobotType.NOISETOWER))
+        		{
+                    rc.attackSquare(rc.senseRobotInfo(nearbyEnemies[0]).location);
+                    return true;
+        		}
+        	}
         }
         return false;
     }
@@ -80,6 +172,7 @@ public class Attacks
      */
     public static boolean cowDenial() throws GameActionException
     {
+    	// Not Done
     	return false;
     }
 }
