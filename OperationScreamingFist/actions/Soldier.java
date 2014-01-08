@@ -13,7 +13,6 @@ public class Soldier {
     
     private static RobotController rc = RobotPlayer.rc;
     private static Random rand = RobotPlayer.rand;
-    private static Direction[] directions = RobotPlayer.directions;
     
     public static void broadcastLocation() throws GameActionException {
         rc.setIndicatorString(0, "read ID: "+rc.readBroadcast(0));
@@ -77,7 +76,7 @@ public class Soldier {
      * @throws GameActionException
      */
     public static void randomMove() throws GameActionException {
-        Direction moveDirection = directions[rand.nextInt(8)];
+        Direction moveDirection = Util.directions[rand.nextInt(8)];
         if (rc.canMove(moveDirection)) {
             rc.move(moveDirection);
         }

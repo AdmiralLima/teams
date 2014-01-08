@@ -9,7 +9,6 @@ public class Tactic {
     
     private static RobotController rc = RobotPlayer.rc;
     private static Random rand = RobotPlayer.rand;
-    public static Direction[] directions = {Direction.NORTH, Direction.NORTH_EAST, Direction.EAST, Direction.SOUTH_EAST, Direction.SOUTH, Direction.SOUTH_WEST, Direction.WEST, Direction.NORTH_WEST};
     
     public static void soldierSwarm() {
         
@@ -45,6 +44,16 @@ public class Tactic {
         //Sneak towards the enemy
         else {
             Soldier.sneakTowardEnemyHQ();
+        }
+    }
+    
+    public static void hqSpawnAndAttack() throws GameActionException {
+        boolean done = false;
+        done = Attacks.attackRandom(); // try to attack
+        if (done) {
+            rc.yield();
+        } else {
+            done = HQ.spawnTowardEnemy(); // try to spawn
         }
     }
     

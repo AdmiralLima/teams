@@ -8,7 +8,6 @@ public class Attacks
 {
     private static RobotController rc = RobotPlayer.rc;
     private static Random rand = RobotPlayer.rand;
-    public static Direction[] directions = {Direction.NORTH, Direction.NORTH_EAST, Direction.EAST, Direction.SOUTH_EAST, Direction.SOUTH, Direction.SOUTH_WEST, Direction.WEST, Direction.NORTH_WEST};
     
     /**
      * attack an enemy within range
@@ -19,8 +18,7 @@ public class Attacks
     public static boolean attackRandom() throws GameActionException 
     {
         Robot[] nearbyEnemies = rc.senseNearbyGameObjects(Robot.class,rc.senseRobotInfo(rc.getRobot()).type.attackRadiusMaxSquared,rc.getTeam().opponent());
-        if (nearbyEnemies.length > 0) 
-        {
+        if (nearbyEnemies.length > 0) {
             rc.attackSquare(rc.senseRobotInfo(nearbyEnemies[0]).location);
             return true;
         }
@@ -200,7 +198,7 @@ public class Attacks
     		MapLocation Loc = rc.getLocation();
     		for (int j = 1; j <= dis; i++)
     		{
-    			Loc = Loc.add(directions[dir]);
+    			Loc = Loc.add(Util.directions[dir]);
     		}
     		int cows = (int) rc.senseCowsAtLocation(Loc);
     		if (cows > maxCow)
