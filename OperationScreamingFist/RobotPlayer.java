@@ -34,31 +34,7 @@ public class RobotPlayer {
             else if (rc.getType() == RobotType.SOLDIER) { // if robot is a soldier
                 if (rc.isActive()) { // check that soldier is still active
                     try {
-                        int action = (rc.getRobot().getID()*rand.nextInt(1001) + 500)%1001;
-                        // construct PASTR
-                        if (action < 5) {
-                            Soldier.constructPastr();
-                        }
-                        // attack nearby cunts
-                        else if (action < 300) {
-                            Soldier.attackRandom();
-                        }
-                        // move in a random direction
-                        else if (action < 600) {
-                            Soldier.randomMove();
-                        }
-                        // suicide bomb enemy PASTRs
-                        else if (action < 700) {
-                            Soldier.suicideBomb();
-                        }
-                        // move away from the friendly HQ
-                        else if (action < (800)) {
-                            Soldier.moveAwayFromHQ();
-                        }
-                        //Sneak towards the enemy
-                        else {
-                            Soldier.sneakTowardEnemyHQ();
-                        }
+                        Tactic.random();
                     } catch (GameActionException e) {e.printStackTrace(); System.out.println("Soldier exception");}
                 }
             }
