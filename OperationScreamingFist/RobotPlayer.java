@@ -37,7 +37,7 @@ public class RobotPlayer {
                         int action = (rc.getRobot().getID()*rand.nextInt(1001) + 500)%1001;
                         // construct PASTR
                         if (action < 5) {
-                            Soldier.construct();
+                            Soldier.constructPastr();
                         }
                         // attack nearby cunts
                         else if (action < 300) {

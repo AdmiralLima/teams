@@ -10,8 +10,9 @@ public class Soldier {
     private static Random rand = RobotPlayer.rand;
     private static Direction[] directions = RobotPlayer.directions;
     
-    public static void broadcastLocation() {
-        
+    public static void broadcastLocation() throws GameActionException {
+        rc.setIndicatorString(0, "read ID: "+rc.readBroadcast(0));
+        rc.broadcast(0, locToInt(rc.getLocation()));
     }
     
     /**
@@ -33,10 +34,14 @@ public class Soldier {
      * 
      * @throws GameActionException
      */
-    public static void construct() throws GameActionException {
+    public static void constructPastr() throws GameActionException {
         if (rc.getLocation().distanceSquaredTo(rc.senseHQLocation()) > 25) {
             rc.construct(RobotType.PASTR);
         }
+    }
+    
+    public static void constructNoisetower() throws GameActionException {
+        rc.construct(RobotType.NOISETOWER);
     }
     
     /**
@@ -73,6 +78,17 @@ public class Soldier {
         if (rc.canMove(moveDirection)) {
             rc.move(moveDirection);
         }
+    }
+    
+    
+    ////////////UTILITIES/////////////
+    
+    private static int locToInt(MapLocation m) {
+        return (m.x*100 +m.y);
+    }
+    
+    private static MapLocation intToLoc(int i) {
+        return new MapLocation(i/100, i%100);
     }
     
     
