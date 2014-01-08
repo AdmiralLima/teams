@@ -1,7 +1,6 @@
 package OperationScreamingFist.actions;
 
 import java.util.Random;
-
 import OperationScreamingFist.RobotPlayer;
 import battlecode.common.*;
 

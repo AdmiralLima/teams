@@ -16,20 +16,6 @@ public class Soldier {
     }
     
     /**
-     * attacks a random nearby enemy
-     * 
-     * @throws GameActionException
-     */
-    public static void attackRandom() throws GameActionException {
-        Robot[] nearbyEnemies = rc.senseNearbyGameObjects(Robot.class, 10, rc.getTeam().opponent());
-        if (nearbyEnemies.length > 0) {
-            RobotInfo robotInfo;
-            robotInfo = rc.senseRobotInfo(nearbyEnemies[0]);
-            rc.attackSquare(robotInfo.location);
-        }
-    }
-    
-    /**
      * constructs a PASTR at current location
      * 
      * @throws GameActionException
@@ -42,6 +28,18 @@ public class Soldier {
     
     public static void constructNoisetower() throws GameActionException {
         rc.construct(RobotType.NOISETOWER);
+    }
+    
+    /**
+     * moves in dir if possible
+     * 
+     * @param dir
+     * @throws GameActionException
+     */
+    public static void move(Direction dir) throws GameActionException {
+        if (rc.canMove(dir)) {
+            rc.move(dir);
+        }
     }
     
     /**
@@ -88,7 +86,7 @@ public class Soldier {
             }
         }
         if (pastrs.length > 0) {
-            rc.move(rc.getLocation().directionTo(pastrs[0]));
+            Soldier.move(rc.getLocation().directionTo(pastrs[0]));
         }
     }
     
