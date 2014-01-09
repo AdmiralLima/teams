@@ -25,7 +25,7 @@ public class Spawn
         if (canSpawn()) 
         {
         	
-        	// Find the direction of the enemy HQ and attemps to spawn in that direction
+        	// Find the direction of the enemy HQ and attempts to spawn in that direction
             Direction spawnDir = Sense.senseEnemyHQDirection();
             if (rc.senseObjectAtLocation(rc.getLocation().add(spawnDir)) == null) 
             {
