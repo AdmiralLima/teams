@@ -29,48 +29,44 @@ public class Slug
 		// We start by getting our current location
 		MapLocation current = rc.getLocation();
 		
-		// Next we find the direction we would really like to go.
-		Direction desired = current.directionTo(goal);
-		Direction tryDir = desired;
+		// Lets get the direction of our goal.
+		Direction goalDir = current.directionTo(goal);
+		int goalIndex = Util.getDirectionIndex(goalDir);
 		
-		// Lets find our the location we want to go.
-		MapLocation want = current;
-		MapLocation tryLoc = want;
+		MapLocation possibleMove;
+		boolean shouldMove;
 		
-		// Lets try moving in each direction.
-		for (int i = 0; i < 8; i++)
+		// Now we need to find a plausible direction to travel.
+		for (int inc : Util.dLooks)
 		{
 			
-			// Rotate so we do not try the same direction twice.
-			for (int j = 0; j < i; j++)
-			{
-				tryDir = desired.rotateLeft();
-			}
+			// We will look back and forth until we find somewhere we can move.
+			goalDir = Util.directions[Math.abs(goalIndex + inc) % 8];
+			possibleMove = current.add(goalDir);
 			
-			// Find the new location we might want to go to.
-			tryLoc = want.add(tryDir);
-			
-			// No point doing extra computation if there is something in the way.
-			if (rc.canMove(tryDir))
+			// If we cannot move there there is no point in looking.
+			if (rc.canMove(goalDir))
 			{
-				boolean shouldMove = true;
+				shouldMove = true;
 				
-				// We do not want to go somewhere we have already been.
-				MapLocation old;
-				for (int k = 0; k < 5 && k < slug.size(); k++)
+				// We need to make sure we do not get stuck.
+				for (MapLocation old : slug)
 				{
-					old = slug.get(k);
-					if (old.equals(tryLoc) && !old.equals(slug.get(0)))
+					if (old.equals(possibleMove))
 					{
 						shouldMove = false;
 					}
 				}
-				
-				// We might actually get to move.
-				if (shouldMove)
+			
+				// If we can move then we should.
+				if (shouldMove && rc.canMove(goalDir))
 				{
+					
+					// We need to update our slug.
 					slug.add(current);
-					rc.move(tryDir);
+					
+					// Now we can actually move.
+					rc.move(goalDir);
 					break;
 				}
 			}
