@@ -10,10 +10,11 @@ public class RobotPlayer
 	// Storing our RobotController here allows its use by the framework.
     public static RobotController rc;
     public static RobotType rcType;
-    public static int mapWidth;
+
     public static ArrayList<MapLocation> slug;
     public static int goal;
     public static MapLocation enemyHQ;
+    public static MapLocation friendlyHQ;
     
     // This is the method where everything happens.
     public static void run(RobotController thisRC) 
@@ -22,10 +23,18 @@ public class RobotPlayer
     	// Sets up our framework to run this robot.
     	rc = thisRC;
     	rcType = rc.getType();
-    	mapWidth = rc.getMapHeight();
     	slug = new ArrayList<MapLocation>();
     	enemyHQ = rc.senseEnemyHQLocation();
-     	
+    	friendlyHQ = rc.senseHQLocation();
+    	     	
+    	if (rcType.equals(RobotType.HQ))
+		{
+    		try 
+    		{
+    			Goal.goToFriendlyHQ();
+    		} catch (Exception e) { System.out.println("Caught HQ Setup Exception."); e.printStackTrace(); }
+		}
+    	
     	// This loop controls the robot for the remainder of its life.
     	while (true)
     	{
@@ -39,9 +48,8 @@ public class RobotPlayer
     			{
     				try 
     				{
-    					
-    					// We need to update our SOLDIERs goal.
-    					DeathToPASTRs.setGoal();
+
+    					Goal.goToEnemyPasture();
     					
     					// We try to attack nearby enemies.
     					if (!Attack.attackRandomEnemyNotHQ())
@@ -68,14 +76,7 @@ public class RobotPlayer
     							slug.clear();
     							goal = newgoal;
     						}
-    						if (Util.integerToLoc(goal).equals(enemyHQ))
-    						{
-    							SurroundHQ.surroundEnemyHQ();
-    						}
-    						else
-    						{
-    						Slug.slug(Util.integerToLoc(goal));
-    						}
+    						Swarm.swarm();
     					}
     				} catch (Exception e) { System.out.println("Caught Soldier Exception."); e.printStackTrace(); }
     			}
