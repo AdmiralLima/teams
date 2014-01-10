@@ -45,5 +45,4 @@ public class Attack
 		// If we cannot find anything to attack we need to let the caller know. 
 		return false;
 	}
-	
 }
