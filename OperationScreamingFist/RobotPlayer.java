@@ -28,7 +28,11 @@ public class RobotPlayer {
         if (rc.getType() == RobotType.HQ) {
             try {
                 MapBuilder.hqBuildMap();
+                System.out.println(MapBuilder.stringMap());
+                int round = Clock.getRoundNum();
                 MapBuilder.generateMesh();
+                int roundfin = Clock.getRoundNum();
+                System.out.println("Took " + (roundfin - round) +" rounds to compute mesh");
                 System.out.println(MapBuilder.stringMesh());
             } catch (GameActionException e) {e.printStackTrace();}
         }

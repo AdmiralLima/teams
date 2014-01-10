@@ -63,10 +63,11 @@ public class MapBuilder {
     public static void generateMesh() {
         int area = 0;
         while (area < freeArea) {
-            System.out.println(freeArea - area);
-            int bc = Clock.getBytecodeNum();
+            System.out.println("Remaining area: " + (freeArea - area));
+            //int bc = Clock.getBytecodeNum();
             MapLocation newLoc = Util.randomLoc();
             Rectangle r = new Rectangle(newLoc);
+            System.out.println("Started " + r.toString());
             for (Direction dir : directions) {
                 boolean expanding = true;
                 while (expanding) {
@@ -77,20 +78,18 @@ public class MapBuilder {
             area += r.area();
             System.out.println("finished " + r.toString());
             rectangles.add(r);  
-            System.out.println("Used " + (Clock.getBytecodeNum() - bc) +" bc");
+            //System.out.println("Used " + (Clock.getBytecodeNum() - bc) +" bc");
         }
     }
     
     public static String stringMesh() {
         String[] map = new String[mapWidth];
-        int c = -1;
+        char c = '0';
         for (int y = 0; y < mapHeight; y++) {
             String row = "";
             for (int x = 0; x < mapWidth; x++) {
-                //MapLocation m = new MapLocation(x,y);
-                //terrain = readMap(m);
-                c = (char) rectangles.whichRectContains(x, y) + 100;
-                row = row.concat(String.valueOf(c));
+                c = (char)(rectangles.whichRectContains(x, y) + (int)'~' + 40);
+                row = row.concat(Character.toString(c));
             }
             map[y] = row;
         }

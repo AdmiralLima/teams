@@ -16,9 +16,9 @@ public class Rectangle {
     
     public Rectangle(MapLocation m) {
         this.xMin = m.x;
-        this.xMax = m.x;
+        this.xMax = m.x+1;
         this.yMin = m.y;
-        this.yMax = m.y;
+        this.yMax = m.y+1;
     }
     public Rectangle(int xMin, int xMax, int yMin, int yMax) {
         this.xMin = xMin;
@@ -31,21 +31,22 @@ public class Rectangle {
         int axisMin=0; int axisMax=0; int extreme=0; int delta=0;
         switch (dir) {
         case NORTH :  axisMin = xMin; axisMax = xMax; extreme = yMin; delta = -1; break;
-        case NORTH_EAST : if (canAddLoc(xMax+1, yMin-1, rectangles)) {
+        case NORTH_EAST : if (canAddLoc(xMax+0, yMin-1, rectangles)) {
             if (expand(Direction.NORTH, rectangles) && expand(Direction.EAST, rectangles)) {return true;} else {return false;}
         } else {return false;}
         case EAST : axisMin = yMin; axisMax = yMax; extreme = xMax; delta = 1; break;
-        case SOUTH_EAST : if (canAddLoc(xMax+1, yMax+1, rectangles)) {
+        case SOUTH_EAST : if (canAddLoc(xMax+0, yMax+0, rectangles)) {
             if (expand(Direction.SOUTH, rectangles) && expand(Direction.EAST, rectangles)) {return true;} else {return false;}
         } else {return false;}
         case SOUTH : axisMin = xMin; axisMax = xMax; extreme = yMax; delta = 1; break;
-        case SOUTH_WEST : if (canAddLoc(xMin-1, yMax+1, rectangles)) {
+        case SOUTH_WEST : if (canAddLoc(xMin-1, yMax+0, rectangles)) {
             if (expand(Direction.SOUTH, rectangles) && expand(Direction.WEST, rectangles)) {return true;} else {return false;}
         } else {return false;}
         case WEST : axisMin = yMin; axisMax = yMax; extreme = xMin; delta = -1; break;
         case NORTH_WEST : if (canAddLoc(xMin-1, yMin-1, rectangles)) {
             if (expand(Direction.NORTH, rectangles) && expand(Direction.WEST, rectangles)) {return true;} else {return false;}
         } else {return false;}
+        default: System.out.println("Rectangle.expand(): Piss off with your OMNI"); break;
         }
         
         boolean canAdd = true;
@@ -59,7 +60,7 @@ public class Rectangle {
             case EAST : this.xMax = extreme + delta; break;
             case SOUTH : this.yMax = extreme + delta; break;
             case WEST : this.xMin = extreme + delta; break;
-            default: System.out.println("can't add that direction");
+            default: System.out.println("Rectangle.expand(): can't add that direction");
             }
         } else {
             return false;
@@ -106,10 +107,10 @@ public class Rectangle {
     }
     
     public boolean contains(MapLocation m) {
-        return (xMin <= m.x && m.x <= xMax && yMin <= m.y && m.y <= yMax);
+        return (xMin <= m.x && m.x < xMax && yMin <= m.y && m.y < yMax);
     }
     public boolean contains(int x, int y) {
-        return (xMin <= x && x <= xMax && yMin <= y && y <= yMax);
+        return (xMin <= x && x < xMax && yMin <= y && y < yMax);
     }
         
     public MapLocation center() {
