@@ -162,6 +162,7 @@ public class Attacks {
 	 */
 	public static boolean attackLocation(MapLocation attackLoc)
 			throws GameActionException {
+	    // potentially could use this method to exclude robots from attacking enemy hq's location
 		if (rc.getLocation().distanceSquaredTo(attackLoc) <= rc
 				.senseRobotInfo(rc.getRobot()).type.attackRadiusMaxSquared) {
 			rc.attackSquare(attackLoc);
