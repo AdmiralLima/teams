@@ -1,6 +1,7 @@
 package fuzzMUFFIN;
 
 import java.util.ArrayList;
+
 import battlecode.common.*;
 
 public class RobotPlayer 
@@ -11,6 +12,7 @@ public class RobotPlayer
     public static RobotType rcType;
     public static int mapWidth;
     public static ArrayList<MapLocation> slug;
+    public static int goal;
     
     // This is the method where everything happens.
     public static void run(RobotController thisRC) 
@@ -58,7 +60,13 @@ public class RobotPlayer
     					// We try to attack nearby enemies.
     					if (!Attack.attackRandomEnemyNotHQ())
     					{
-    						Slug.slug(rc.senseEnemyHQLocation());
+    						int newgoal = rc.readBroadcast(1);
+    						if (goal != newgoal)
+    						{
+    							slug.clear();
+    							goal = newgoal;
+    						}
+    						Slug.slug(Util.integerToLoc(goal));
     					}
     				} catch (Exception e) { System.out.println("Caught Soldier Exception."); e.printStackTrace(); }
     			}

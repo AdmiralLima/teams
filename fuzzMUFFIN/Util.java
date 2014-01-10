@@ -18,6 +18,26 @@ public class Util
     // Used for navigation.
     public static final int[] dLooks = {0, -1, 1, -2, 2, -3, 3, 4};
     
+    
+    /**
+     * Figures out what element in the directions array the given direction corresponds to.
+     * 
+     * @param Direction - Takes the direction we need the index of.
+     * @return int - Returns the index of the given direction.
+     */
+    public static int getDirectionIndex(Direction dir)
+    {
+    	for (int i = 0; i < 8; i++)
+    	{
+    		if (dir.equals(directions[i]))
+    		{
+    			return i;
+    		}
+    	}
+    	return -1;
+    }
+    
+    
     /**
      * Turns the given location into an integer.
      * 
