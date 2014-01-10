@@ -12,6 +12,7 @@ public class RobotPlayer {
     public static int mapWidth;
     public static int mapHeight;
     public static int maxMapChannel;
+    public static MapLocation[] visited;
     
     public static void run(RobotController rcin) {
         ///////// initialise stuff /////////
@@ -32,7 +33,13 @@ public class RobotPlayer {
             } catch (GameActionException e) {e.printStackTrace();}
         }
         
+        visited = new MapLocation[1];
+        visited[0] = rc.getLocation();
+        
         while (true) {
+        	
+        	
+        	
             if (rc.isActive()) {
                 if (rc.getType() == RobotType.HQ) { // if robot is the HQ
                     try {
@@ -70,9 +77,17 @@ public class RobotPlayer {
 //                        	}
 //                        }
 //                        }
+
+
+//                    	Direction direc = Bugging.Bug(rc.senseEnemyHQLocation());
+//                    	if (rc.canMove(direc)) {
+//                    		rc.move(direc);
+//                    	}
+
                     } catch (Exception e) {e.printStackTrace(); System.out.println("Soldier exception");}
                 }
             }
+            visited[0] = rc.getLocation();
             rc.yield();
         }
         
