@@ -1,12 +1,16 @@
 package OperationScreamingFist.actions;
 
+import java.util.Random;
+
 import OperationScreamingFist.RobotPlayer;
 import battlecode.common.*;
 
 public class Util {
     
     public static RobotController rc = RobotPlayer.rc;
+    private static Random rand = RobotPlayer.rand;
     public static int mapWidth = RobotPlayer.mapWidth;
+    public static int mapHeight = RobotPlayer.mapHeight;
     
     /**
      * Util contains very basic utility methods, constants and other miscellaneous things that 
@@ -16,20 +20,16 @@ public class Util {
     
     ///////METHODS/////////
     
-    public static int readMap(MapLocation m) throws GameActionException {
-        return rc.readBroadcast(locToInt(m));
-    }
-    
-    public static void writeMap(MapLocation m, int msg) throws GameActionException {
-        rc.broadcast(locToInt(m), msg);
-    }
-    
     public static boolean isRobot(GameObject g) {
         return g.getClass().equals(Robot.class);
     }
     
     public static boolean sameClass(GameObject g1, GameObject g2) {
         return g1.getClass().equals(g2.getClass());
+    }
+    
+    public static MapLocation randomLoc() {
+        return new MapLocation(rand.nextInt(mapWidth), rand.nextInt(mapHeight));
     }
     
     public static int locToInt(MapLocation m) {
