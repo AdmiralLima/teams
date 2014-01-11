@@ -9,14 +9,14 @@ public class Attack
 {
 	
 	// We need to store the robot that will be executing attacks.
-	private static RobotController rc;
+	private RobotController rc;
 	
 	/**
 	 * Sets the robot controller in order to execute future attacks.  
 	 * 
 	 * @param Robotcontroller - Takes the robot controller that will execute future attacks.
 	 */
-	public static void attackSetup(RobotController thisRC)
+	public Attack(RobotController thisRC)
 	{
 		rc = thisRC;
 	}
@@ -27,7 +27,7 @@ public class Attack
 	 * @param Robot - Takes the robot to be attacked.
 	 * @throws GameActionException
 	 */
-	public static void attackRobot(Robot killThis) throws GameActionException
+	public void attackRobot(Robot killThis) throws GameActionException
 	{
 		
 		// First we need to know were the Robot is.
@@ -44,7 +44,7 @@ public class Attack
 	* @return boolean - Returns true if we execute an attack, false otherwise.
 	* @throws GameActionException
 	*/
-	public static boolean attackType(RobotType killThisType) throws GameActionException
+	public boolean attackType(RobotType killThisType) throws GameActionException
 	{
 			
 		// First we need some information.
@@ -90,7 +90,7 @@ public class Attack
 	 * @return boolean - Returns true 
 	 * @throws GameActionException
 	 */
-	public static boolean attackRandomRobot() throws GameActionException
+	public boolean attackRandomRobot() throws GameActionException
 	{
 		
 		// First we need some information.
@@ -123,7 +123,7 @@ public class Attack
 	 * @return boolean - Returns true if the robot attacks, false if it does not.
 	 * @throws GameActionException
 	 */
-	public static boolean attackRandomRobotNotEnemyHQ() throws GameActionException 
+	public boolean attackRandomRobotNotEnemyHQ() throws GameActionException 
 	{
 		
 		// First we need some information.
@@ -172,7 +172,7 @@ public class Attack
 	 * @return boolean - Returns true if an attack was executed, false otherwise.
 	 * @throws GameActionException
 	 */
-	public static boolean attackWithPriority(RobotType firstChoice, RobotType secondChoice) throws GameActionException
+	public boolean attackWithPriority(RobotType firstChoice, RobotType secondChoice) throws GameActionException
 	{
 		
 		// First we need some information.
