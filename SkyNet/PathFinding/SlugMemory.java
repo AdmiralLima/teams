@@ -1,4 +1,4 @@
-package SkyNet;
+package SkyNet.PathFinding;
 
 import battlecode.common.*;
 
@@ -11,6 +11,9 @@ public class SlugMemory
 	// We need somewhere to store locations that we have visited.
 	private MapLocation[] memory;
 	
+	// We can speed up by remembering how many locations we need to check
+	private int counter;
+	
 	/**
 	 * This constructor creates a new instance of this data type.
 	 * 
@@ -19,6 +22,7 @@ public class SlugMemory
 	public SlugMemory(int length)
 	{
 		memory = new MapLocation[length];
+		counter = 0;
 	}
 	
 	/**
@@ -28,15 +32,44 @@ public class SlugMemory
 	 */
 	public void remember(MapLocation rememberThis)
 	{
-		
+
 		// First we need to shift each location in our memory.
-		for (int i = memory.length - 1; i > 0; i++)
+		for (int i = counter; i > 0; i--)
 		{
-			memory[i] = memory[i - 1];
+			memory[i] = memory[i-1];
 		}
 		
 		// Now that we have made room we store the new location.
 		memory[0] = rememberThis;
+		counter ++;
+		if (counter == 15)
+		{
+			counter = 14;
+		}
+	}
+	
+	/**
+	 * Clears the memory.
+	 */
+	public void clear()
+	{
+		for (int i = 0; i < memory.length; i++)
+		{
+			memory[i] = null;
+		}
+		counter = 0;
+	}
+	
+	/**
+	 * Removes the last element in the memory.
+	 */
+	public void forget()
+	{
+		if (counter > 0)
+		{
+			memory[counter - 1] = null;
+			counter --;
+		}
 	}
 	
 	/**
@@ -49,28 +82,24 @@ public class SlugMemory
 	{
 		
 		// We will have to check every location in memory.
-		for (MapLocation visited : memory)
+		for (int i = 0; i < counter; i++)
 		{
-			if (visited.equals(maybeVisited))
-			{
-				return true;
-			}
+				if (memory[i].equals(maybeVisited))
+				{
+					return true;
+				}
 		}
 		return false;
 	}
 	
-	
-	public boolean visitedAdjacent(MapLocation maybeVisitedClose)
+	/**
+	 * Returns the previous location of this robot.
+	 * 
+	 * @return MapLocation - Returns the previous location of this robot.
+	 */
+	public MapLocation previous()
 	{
-		Direction startWithThis = Direction.NORTH;
-		
-		for (int i = 0; i < 8; i++)
-		{
-			
-			
-			startWithThis = startWithThis.rotateRight();
-		}
-		
-		return false;
+		return memory[0];
 	}
+	
 }

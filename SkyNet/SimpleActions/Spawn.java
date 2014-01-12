@@ -1,4 +1,4 @@
-package SkyNet;
+package SkyNet.SimpleActions;
 
 import battlecode.common.*;
 
