@@ -2,34 +2,71 @@ package team005;
 
 import battlecode.common.*;
 
+/**
+ * Contains methods relating to spawning units from the HQ.
+ */
 public class Spawn 
 {
 	
-	/**
-	 * Contains methods relating to spawning units from the HQ.
-	 */
+	// We need to store the robot that will be spawning.
+	private RobotController rc;
 	
-	// This will save us from having to pass our RobotController every time we use a method here
-	private static RobotController rc = RobotPlayer.rc;
+	/**
+	 * Sets up spawning for the current RobotPlayer.
+	 * 
+	 * @param RobotController - Takes the robot that will be spawning.
+	 */
+	public Spawn(RobotController thisRC)
+	{
+		rc = thisRC;
+	}
+	
+	/**
+	 * Tries to spawn a soldier in the given direction.
+	 * 
+	 * @param Direction - The direction we want to spawn in.
+	 * @return boolean - Returns true if we spawn, false otherwise.
+	 * @throws GameActionException
+	 */
+	public boolean spawnDirection(Direction thisDirection) throws GameActionException
+	{
+		
+		// First we need to make sure we have not hit our unit cap.
+		if (rc.senseRobotCount() < GameConstants.MAX_ROBOTS)
+		{
+			
+			// Now we need to check if we can spawn in the given direction.
+			if (rc.senseObjectAtLocation(rc.getLocation().add(thisDirection)) == null)
+			{
+				rc.spawn(thisDirection);
+			}
+		}
+		
+		// If we cannot spawn in the given direction we need to let the caller know.
+		return false;
+	}
 	
     /**
-     * Tries to spawn a soldier in the direction of the enemy HQ
+     * Tries to spawn a soldier in the direction of the enemy HQ.
      * 
      * @return boolean - Returns True is spawn attempt is successful, returns False otherwise.
      * @throws GameActionException
      */
-    public static boolean spawnTowardEnemy() throws GameActionException 
+    public boolean spawnDirectionOfEnemy() throws GameActionException 
     {
     	
     	// Makes sure we have not hit out unit cap.
-        if (canSpawn()) 
+        if (rc.senseRobotCount() < GameConstants.MAX_ROBOTS) 
         {
         	
-        	// Find the direction of the enemy HQ and attempts to spawn in that direction
-            Direction spawnDir = Sense.senseEnemyHQDirection();
-            if (rc.senseObjectAtLocation(rc.getLocation().add(spawnDir)) == null) 
+        	// We need the direction of the enemy HQ.
+            Direction spawnDirection = rc.getLocation().directionTo(rc.senseEnemyHQLocation());
+            
+            
+            // Now we try to spawn in that direction
+            if (rc.senseObjectAtLocation(rc.getLocation().add(spawnDirection)) == null) 
             {
-                rc.spawn(spawnDir);
+                rc.spawn(spawnDirection);
                 return true;
             }
         }
@@ -45,24 +82,21 @@ public class Spawn
      * @return boolean - Returns True if spawn attempt is successful, returns False otherwise.
      * @throws GameActionException
      */
-    public static boolean spawnAtAllCosts() throws GameActionException
+    public boolean spawn() throws GameActionException
     {
     	// First we make sure we are not at our unit cap.
-    	if (canSpawn())
+    	if (rc.senseRobotCount() < GameConstants.MAX_ROBOTS)
     	{
     		
     		// If we can spawn we try to spawn towards the enemy.
-    		if (spawnTowardEnemy())
+            Direction spawnDirection = rc.getLocation().directionTo(rc.senseEnemyHQLocation());
+    		if (rc.senseObjectAtLocation(rc.getLocation().add(spawnDirection)) == null)
     		{
-    			return true;
+                rc.spawn(spawnDirection);
+                return true;
     		}
     		
-    		// If we cannot spawn towards the enemy we go in a 
-    		// circle trying to spawn.
-    		Direction spawnDirection = Sense.senseEnemyHQDirection();
-    		
-    		// Hopefully we will not make it all the way through this loop
-    		// because doing so would be computationally intensive.
+    		// If we cannot spawn towards the enemy we go in any available direction.
     		for (int i = 0; i < 7; i++)
     		{
     			spawnDirection = spawnDirection.rotateRight();
@@ -76,20 +110,4 @@ public class Spawn
     	return false;
     }
     
-    /**
-     * Checks whether it is possible to spawn additional units.
-     * 
-     * @return boolean - Returns true if additional units are available.
-     * @throws GameActionException
-     */
-    public static boolean canSpawn() throws GameActionException
-    {
-    	
-    	// Checks the current number of units against the unit cap.
-    	if (rc.senseRobotCount() < GameConstants.MAX_ROBOTS)
-    	{
-    		return true;
-    	}
-    	return false;
-    }
 }

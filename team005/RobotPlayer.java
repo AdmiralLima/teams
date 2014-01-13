@@ -1,90 +1,91 @@
 package team005;
 
-import java.util.ArrayList;
-
 import battlecode.common.*;
 
 public class RobotPlayer 
 {
-	
-	// Storing our RobotController here allows its use by the framework.
-    public static RobotController rc;
-    public static RobotType rcType;
-    public static int mapWidth;
-    public static ArrayList<MapLocation> slug;
-    public static int goal;
-    public static MapLocation enemyHQ;
+
+	// We will need to 
+    private static HQControl HQ;
+    private static SOLDIERControl SOLDIER;
+    private static NOISETOWERControl NT;
     
     // This is the method where everything happens.
     public static void run(RobotController thisRC) 
     {
-    	
-    	// Sets up our framework to run this robot.
-    	rc = thisRC;
-    	rcType = rc.getType();
-    	mapWidth = rc.getMapHeight();
-    	slug = new ArrayList<MapLocation>();
-    	enemyHQ = rc.senseEnemyHQLocation();
-     	
-    	// This loop controls the robot for the remainder of its life.
-    	while (true)
+    	try
     	{
     		
-    		// No reason to run code if our robot cannot do anything.
-    		if (rc.isActive())
+    		// We need to know what we are dealing with.
+    		RobotType ourType = thisRC.getType();
+    		
+    		// We need to set up our HQ.
+    		if (ourType.equals(RobotType.HQ))
     		{
-    			
-    			// Determines how our HQ will behave.
-    			if (rcType.equals(RobotType.HQ))
-    			{
-    				try 
-    				{
-    					
-    					// We need to update our SOLDIERs goal.
-    					DeathToPASTRs.setGoal();
-    					
-    					// We try to attack nearby enemies.
-    					if (!Attack.attackRandomEnemyNotHQ())
-    					{
-    						
-    						// If there are none we spawn a new SOLDIER.
-    						Spawn.spawnAtAllCosts();
-    					}
-    				} catch (Exception e) { System.out.println("Caught HQ Exception."); e.printStackTrace(); }
-    			}
-    			
-    			// Determines how our SOLDIERs will behave.
-    			if (rcType.equals(RobotType.SOLDIER))
-    			{
-    				try
-    				{
-    					
-    					// We try to attack nearby enemies.
-    					if (!Attack.attackRandomEnemyNotHQ())
-    					{
-    						int newgoal = rc.readBroadcast(1);
-    						if (goal != newgoal)
-    						{
-    							slug.clear();
-    							goal = newgoal;
-    						}
-    						if (Util.integerToLoc(goal).equals(enemyHQ))
-    						{
-    							SurroundHQ.surroundEnemyHQ();
-    						}
-    						else
-    						{
-    						Slug.slug(Util.integerToLoc(goal));
-    						}
-    					}
-    				} catch (Exception e) { System.out.println("Caught Soldier Exception."); e.printStackTrace(); }
-    			}
+    			HQ = new HQControl(thisRC);
     		}
     		
-    		// We have finished our turn so we yield.
-    		rc.yield();
-    	}
+    		// We need to set up our SOLDIER.
+    		if (ourType.equals(RobotType.SOLDIER))
+    		{
+    			
+    			// We may need to build a NOISETOWER.
+    			if (thisRC.senseRobotCount() < 2)
+    			{
+    				thisRC.construct(RobotType.NOISETOWER);
+    			}
+    			
+    			// We may need to build a PASTR.
+    			else if (thisRC.senseRobotCount() < 3)
+    			{
+    				thisRC.construct(RobotType.PASTR);
+    				thisRC.yield();
+    			}
+    			
+    			//If not we will SOLDIER on.
+    			SOLDIER = new SOLDIERControl(thisRC);
+    		}
+    		
+    		// We need to set up our tower.
+    		if (ourType.equals(RobotType.NOISETOWER))
+    		{
+    			NT = new NOISETOWERControl(thisRC);
+    		}
+    		
+    		// This governs what the robot will do until it dies.
+    		while (true)
+    		{
+    			
+    			// We should not try to do anything if we are not active.
+    			if (thisRC.isActive())
+    			{
+    				
+    				// Lets run our HQ.
+    				if (ourType.equals(RobotType.HQ))
+    				{
+    					HQ.runHQ();
+    				}
+    				
+    				// Lets run our SOLDIERs.
+    				if (ourType.equals(RobotType.SOLDIER))
+    				{
+    					SOLDIER.runSOLDIER();
+    				}
+    				
+    				// Lets run our NOISETOWERs.
+    				if (ourType.equals(RobotType.NOISETOWER))
+    				{
+    					NT.runNOISETOWER();
+    				}
+    			}
+    			
+    			// Do not forget to yield or you will hate yourself forever.
+    			thisRC.yield();
+    		}
+		}
+		catch (Exception e)
+		{
+			e.printStackTrace();
+		}
     }
-
-
 }

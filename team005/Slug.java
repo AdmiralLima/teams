@@ -1,75 +1,98 @@
 package team005;
 
-import java.util.ArrayList;
-
 import battlecode.common.*;
-
+/**
+ * this class contains methods for Slug navigation (bug navigation
+ * with short-term memory).
+ */
 public class Slug 
 {
 
-	/**
-	 * this class contains methods for Slug navigation (bug navigation
-	 * with short-term memory).
-	 */
-	
 	// This will save us from having to pass our RobotController every time we use a method here
-	private static RobotController rc = RobotPlayer.rc;
+	private RobotController rc;
 	
 	// We need access to our robot's slug memory.
-	private static ArrayList<MapLocation> slug = RobotPlayer.slug;
+	private SlugMemory memory;
+	
+	// We need some way to order our search for valid movement.
+	private static final int[] directionalLook = {0, 1, -1, -2, 2, -3, 3, 4};
 	
 	/**
-	 * Robot will slug towards the given goal. 
+	 * Creates a new slug.
+	 * 
+	 * @param RobotController - Takes the robot the slug will navigate for.
+	 * @param int - Takes the length of the slug's memory
+	 */
+	public Slug(RobotController thisRC, int memoryLength)
+	{
+		rc = thisRC;
+		memory = new SlugMemory(memoryLength);
+	}
+	
+	/**
+	 * Robot will slug towards the given location. 
 	 * 
 	 * @param MapLocation - Takes the goal location.
 	 * @throws GameActionException
 	 */
-	public static void slug(MapLocation goal) throws GameActionException
+	public void slug(MapLocation goal) throws GameActionException
 	{
 		// We start by getting our current location
-		MapLocation current = rc.getLocation();
+		MapLocation currentLocation = rc.getLocation();
 		
 		// Lets get the direction of our goal.
-		Direction goalDir = current.directionTo(goal);
-		int goalIndex = Util.getDirectionIndex(goalDir);
+		Direction goalDirection = currentLocation.directionTo(goal);
 		
-		MapLocation possibleMove;
-		boolean shouldMove;
-		
-		// Now we need to find a plausible direction to travel.
-		for (int inc : Util.dLooks)
+		// If we are on our goal we do not need to move.
+		if (!goalDirection.equals(Direction.OMNI))
 		{
-			
-			// We will look back and forth until we find somewhere we can move.
-			goalDir = Util.directions[Math.abs(goalIndex + inc) % 8];
-			possibleMove = current.add(goalDir);
-			
-			// If we cannot move there there is no point in looking.
-			if (rc.canMove(goalDir))
+			Direction possibleDirection;
+		
+			// Now we need to find a plausible direction to travel.
+			for (int inc : directionalLook)
 			{
-				shouldMove = true;
-				
-				// We need to make sure we do not get stuck.
-				for (MapLocation old : slug)
+				possibleDirection = goalDirection;
+			
+				// We will look back and forth until we find somewhere we can move.
+				if (inc < 0)
 				{
-					if (old.equals(possibleMove))
+					for (int i = 0; i > inc; i--)
 					{
-						shouldMove = false;
+						possibleDirection = possibleDirection.rotateLeft();
 					}
 				}
-			
-				// If we can move then we should.
-				if (shouldMove && rc.canMove(goalDir))
+				if (inc > 0)
 				{
-					
-					// We need to update our slug.
-					slug.add(current);
-					
-					// Now we can actually move.
-					rc.move(goalDir);
-					break;
+					for (int i = 0; i < inc; i++)
+				{
+					possibleDirection = possibleDirection.rotateRight();
+				}
+			}
+			
+				// If we cannot move there there is no point in looking.
+				if (rc.canMove(possibleDirection))
+				{
+					if (!memory.visited(currentLocation.add(possibleDirection)))
+					{						
+						memory.remember(currentLocation);
+						rc.move(possibleDirection);
+						return;
+					}
 				}
 			}
 		}
+		memory.clear();
+	}
+	
+	/**
+	 * The robot slugs away from the given location.
+	 * 
+	 * @param current
+	 */
+	public void retreat(MapLocation enemy, MapLocation current) throws GameActionException
+	{
+		Direction flee = enemy.directionTo(current);
+		memory.clear();
+		slug(current.add(flee));
 	}
 }

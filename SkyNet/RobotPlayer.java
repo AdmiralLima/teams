@@ -1,96 +1,55 @@
 package SkyNet;
 
-import SkyNet.PathFinding.Slug;
-import SkyNet.SimpleActions.Attack;
-import SkyNet.SimpleActions.Spawn;
+import SkyNet.UnitControl.*;
 import battlecode.common.*;
 
+/**
+ * This class is used by the BattleCode framework to run each of this
+ * team's units for the duration of their lives.
+ */
 public class RobotPlayer 
 {
-
-    public static Spawn spawner;
-    public static Slug slugger;
-    public static Attack attacker;
+    private static Controller controller;
     
-    // This is the method where everything happens.
+    /**
+     * This method is executed at the beginning of a unit's life and 
+     * governs their actions until the game ends or they die.
+     * 
+     * @param RobotController - Takes this unit's controller.
+     */
     public static void run(RobotController thisRC) 
     {
-    	try
-    	{
-	
-    		// What type of robot is this?
-    		RobotType thisRCType = thisRC.senseRobotInfo(thisRC.getRobot()).type;
+    		RobotType ourType = thisRC.getType();
     		
-    		// We will need an attacker.
-    		attacker = new Attack(thisRC);
-
-    		// If we are an HQ we need a spawner.
-    		if (thisRCType.equals(RobotType.HQ))
+    		// The setup is slightly different for each unit type.    		
+    		switch (ourType)
     		{
-    			spawner = new Spawn(thisRC);
+    			case HQ:
+    			{
+    				controller = new ControllerHQ(thisRC);
+    			}
+    			case SOLDIER:
+    			{
+    				controller = new ControllerSOLDIER(thisRC);
+    			}
+    			case NOISETOWER:
+    			{
+    				controller = new ControllerNOISETOWER(thisRC);
+    			}
+    			case PASTR:
+    			{
+    				controller = new ControllerPASTR(thisRC);
+    			}
     		}
     		
-    		// If we are a SOLDIER we need a slug for navigation.
-    		if (thisRCType.equals(RobotType.SOLDIER))
-    		{
-    			slugger = new Slug(thisRC, 50);
-    		}
-    		    		
-    		// Now we need to decide what to do for the rest of our lives.
+    		// The unit controller is called for the duration of the unit's life.
     		while (true)
     		{
-    			
-    			// We should not try to do anything unless we can.
     			if (thisRC.isActive())
     			{
-    			
-    				// What will we do if we are the HQ?
-    				if (thisRCType.equals(RobotType.HQ))
-    				{
-    	
-    					// We should try to attack.
-    					if (!attacker.attackRandomRobotNotEnemyHQ())
-    					{
-    			
-    						// If not we should try to spawn.
-    						spawner.spawn();
-    					}
-    				}
-    				
-    				// What will we do if we are a SOLDIER.
-    				if (thisRCType.equals(RobotType.SOLDIER))
-    				{
-    					if (!attacker.attackRandomRobotNotEnemyHQ())
-    					{
-    						if (!(thisRC.sensePastrLocations(thisRC.getTeam()).length > 0))
-    						{
-    							if (thisRC.getLocation().distanceSquaredTo(thisRC.senseHQLocation()) > 100)
-    							{
-    								thisRC.construct(RobotType.PASTR);
-    							}
-    							else
-    							{
-    								slugger.slug(thisRC.sensePastrLocations(thisRC.getTeam().opponent())[0]);
-    							}
-    						}
-    						else if (thisRC.sensePastrLocations(thisRC.getTeam().opponent()).length > 0)
-    							{
-    								slugger.slug(thisRC.sensePastrLocations(thisRC.getTeam().opponent())[0]);
-    							}
-    						
-    				}
+    				controller.run();
     			}
     			thisRC.yield();
     		}
-
-		}
-		catch (GameActionException e)
-		{
-			System.out.println("YOU DONE FUCKED UP.");
-			e.printStackTrace();
-		}
- 
     }
-
-
 }

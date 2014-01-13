@@ -42,42 +42,46 @@ public class Slug
 		
 		// Lets get the direction of our goal.
 		Direction goalDirection = currentLocation.directionTo(goal);
-		Direction possibleDirection;
 		
-		// Now we need to find a plausible direction to travel.
-		for (int inc : directionalLook)
+		// If we are on our goal we do not need to move.
+		if (!goalDirection.equals(Direction.OMNI))
 		{
-			
-			possibleDirection = goalDirection;
-			
-			// We will look back and forth until we find somewhere we can move.
-			if (inc < 0)
+			Direction possibleDirection;
+		
+			// Now we need to find a plausible direction to travel.
+			for (int inc : directionalLook)
 			{
-				for (int i = 0; i > inc; i--)
+				possibleDirection = goalDirection;
+			
+				// We will look back and forth until we find somewhere we can move.
+				if (inc < 0)
 				{
-					possibleDirection = possibleDirection.rotateLeft();
+					for (int i = 0; i > inc; i--)
+					{
+						possibleDirection = possibleDirection.rotateLeft();
+					}
 				}
-			}
-			if (inc > 0)
-			{
-				for (int i = 0; i < inc; i++)
+				if (inc > 0)
+				{
+					for (int i = 0; i < inc; i++)
 				{
 					possibleDirection = possibleDirection.rotateRight();
 				}
 			}
 			
-			// If we cannot move there there is no point in looking.
-			if (rc.canMove(possibleDirection))
-			{
-				if (!memory.visited(currentLocation.add(possibleDirection)))
-				{					
-					memory.remember(currentLocation);
-					rc.move(possibleDirection);
-					return;
+				// If we cannot move there there is no point in looking.
+				if (rc.canMove(possibleDirection))
+				{
+					if (!memory.visited(currentLocation.add(possibleDirection)))
+					{						
+						memory.remember(currentLocation);
+						rc.move(possibleDirection);
+						return;
+					}
 				}
 			}
 		}
-		memory.forget();
+		memory.clear();
 	}
 	
 	/**
