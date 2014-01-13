@@ -1,6 +1,5 @@
-package SkyNet;
+package T_;
 
-import SkyNet.UnitControl.*;
 import battlecode.common.*;
 
 /**
