@@ -51,7 +51,7 @@ public class MapBuilder {
                 TerrainTile tile = rc.senseTerrainTile(m);
                 switch (tile) {
                 case NORMAL : value = 0; break;
-                case OFF_MAP : value = 2; freeArea -= 1; break;
+                case OFF_MAP : value = 2; break;
                 case ROAD : value = 3; break;
                 case VOID : value = 2; freeArea -= 1; break;
                 }
@@ -66,19 +66,22 @@ public class MapBuilder {
             System.out.println("Remaining area: " + (freeArea - area));
             //int bc = Clock.getBytecodeNum();
             MapLocation newLoc = Util.randomLoc();
-            Rectangle r = new Rectangle(newLoc);
-            System.out.println("Started " + r.toString());
-            for (Direction dir : directions) {
-                boolean expanding = true;
-                while (expanding) {
-                    //System.out.println("expanding in " + dir.toString() + " with " + r.toString());
-                    expanding = r.expand(dir, rectangles);
+            if (!(readMap(newLoc) == 2)) {
+                Rectangle r = new Rectangle(newLoc);
+                System.out.println("Started " + r.toString());
+                for (int i = 0; i < 8; i+=2) {
+                    Direction dir = directions[i];
+                    boolean expanding = true;
+                    while (expanding) {
+                        //System.out.println("expanding in " + dir.toString() + " with " + r.toString());
+                        expanding = r.expand(dir, rectangles);
+                    }
                 }
-            }
-            area += r.area();
-            System.out.println("finished " + r.toString());
-            rectangles.add(r);  
-            //System.out.println("Used " + (Clock.getBytecodeNum() - bc) +" bc");
+                area += r.area();
+                System.out.println("finished " + r.toString());
+                rectangles.add(r);  
+                //System.out.println("Used " + (Clock.getBytecodeNum() - bc) +" bc");
+            }            
         }
     }
     
@@ -88,7 +91,10 @@ public class MapBuilder {
         for (int y = 0; y < mapHeight; y++) {
             String row = "";
             for (int x = 0; x < mapWidth; x++) {
-                c = (char)(rectangles.whichRectContains(x, y) + (int)'~' + 40);
+                //c = (char)(rectangles.whichRectContains(x, y) + (int)'~' + 40);
+                if (rectangles.whichRectContains(x, y) > 0) {
+                    c = '+';
+                } else {c = '0';}
                 row = row.concat(Character.toString(c));
             }
             map[y] = row;
