@@ -1,13 +1,15 @@
 package T_800;
 
-import battlecode.common.*
+import T_800.Strategy.*;
+import battlecode.common.*;
 
 /**
  * This class is called by the Battle Code framework to control a unit for it's lifetime.
  */
 public class RobotPlayer 
 {
-	private Strategy currentStrategy;
+	public static RobotController rc;
+	private static Strategy currentStrategy;
 	
 	/**
 	 * This method is executed at the beginning of a unit's life and 
@@ -17,36 +19,68 @@ public class RobotPlayer
 	 */
 	public static void run(RobotController thisRC) 
 	{
-	    		RobotType ourType = thisRC.getType();
-	    		currentStrategy = new Turtle();
+		rc = thisRC;
+		RobotType ourType = thisRC.getType();
+	    currentStrategy = new Turtle(thisRC);
 	    		
-	    		// The unit controller is called for the duration of the unit's life.
-	    		while (true)
+	    // This loop runs for the duration of the unit's life.
+	    while (true)
+	    {
+	    	if (thisRC.isActive())
+	    	{
+	    		switch (ourType)
 	    		{
-	    			if (thisRC.isActive())
+	    			case HQ:
 	    			{
-	    				switch (ourType)
+	    				try
 	    				{
-	    					case HQ:
-	    					{
-	    					
-	    					}
-	    					case SOLDIER:
-	    					{
-	    						
-	    					}
-	    					case PASTR:
-	    					{
-	    						
-	    					}
-	    					case NOISETOWER:
-	    					{
-	    						
-	    					}
+	    					currentStrategy.runHQ();
+	    				}
+	    				catch (Exception e)
+	    				{
+	    					System.out.println("Caught HQ Exception.");
+	    					e.printStackTrace();
+	    				}
 	    			}
-	    			thisRC.yield();
+	    			case SOLDIER:
+	    			{
+	    				try
+	    				{
+	    					currentStrategy.runSOLDIER();
+	    				}
+	    				catch (Exception e)
+	    				{
+	    					System.out.println("Caught SOLDIER Exception.");
+	    					e.printStackTrace();
+	    				}
+	    			}
+	    			case PASTR:
+	    			{
+	    				try
+	    				{
+	    					currentStrategy.runPASTR();
+	    				}
+	    				catch (Exception e)
+	    				{
+	    					System.out.println("Caught PASTR Exception.");
+	    					e.printStackTrace();
+	    				}
+	    			}
+	    			case NOISETOWER:
+	    			{
+	    				try
+	    				{
+	    					currentStrategy.runNOISETOWER();
+	    				}
+	    				catch (Exception e)
+	    				{
+	    					System.out.println("Caught NOISETOWER Exception.");
+	    					e.printStackTrace();
+	    				}
+	    			}
 	    		}
+	    	}
+	    	thisRC.yield();
 	    }
 	}
-
 }
