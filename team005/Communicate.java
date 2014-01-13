@@ -1,4 +1,4 @@
-package fuzzMUFFIN;
+package team005;
 
 import battlecode.common.*;
 
@@ -38,17 +38,6 @@ public class Communicate
 		int encodedLocation = rc.readBroadcast(channel);
 		
 		// Convert it to a MapLocation and return it.
-		return Util.integerToLocation(encodedLocation);
-	}
-	
-	/**
-	 * Communicates the robots current location.
-	 * 
-	 * @param int - Takes the channel to broadcast to.
-	 * @throws GameActionException
-	 */
-	public static void yellPosition(int channel) throws GameActionException
-	{
-		rc.broadcast(channel, Util.locationToInteger(rc.getLocation()));
+		return Util.integerToLoc(encodedLocation);
 	}
 }

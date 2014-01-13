@@ -1,6 +1,5 @@
-package fuzzMUFFIN;
+package team005;
 
-import java.util.Random;
 import battlecode.common.*;
 
 public class Util 
@@ -13,14 +12,12 @@ public class Util
 	// Stores the possible directions for easy access.
     public static final Direction[] directions = {Direction.NORTH, Direction.NORTH_EAST, Direction.EAST, Direction.SOUTH_EAST, Direction.SOUTH, Direction.SOUTH_WEST, Direction.WEST, Direction.NORTH_WEST};
   
-    // Used for location encoding
-    public static final int biggerThanMap = 200;
+    // Needed for encoding map locations as integers and vice versa.
+    public static final int mapWidth = RobotPlayer.mapWidth;
     
     // Used for navigation.
     public static final int[] dLooks = {0, -1, 1, -2, 2, -3, 3, 4};
     
-    // We will likely need a random number generator.
-    public static final Random rand = new Random();
     
     /**
      * Figures out what element in the directions array the given direction corresponds to.
@@ -40,6 +37,7 @@ public class Util
     	return -1;
     }
     
+    
     /**
      * Turns the given location into an integer.
      * 
@@ -50,7 +48,7 @@ public class Util
     {
     	
     	// The created number is in the format shown in lecture.
-        return (toInt.x + biggerThanMap*toInt.y);
+        return (toInt.x + mapWidth*toInt.y);
     }
     
     /**
@@ -59,11 +57,11 @@ public class Util
      * @param int - Takes the integer to be turned into a location.
      * @return MapLocation - Returns the map location encoded by the integer.
      */
-    public static MapLocation integerToLocation(int i) 
+    public static MapLocation integerToLoc(int i) 
     {
     	
     	// The map location is encoded in the integer in the format 
     	// shown in lecture.
-        return new MapLocation(i%biggerThanMap, i/biggerThanMap);
+        return new MapLocation(i%mapWidth, i/mapWidth);
     }
 }

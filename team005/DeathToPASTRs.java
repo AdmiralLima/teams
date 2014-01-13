@@ -1,4 +1,4 @@
-package fuzzMUFFIN;
+package team005;
 
 import battlecode.common.*;
 

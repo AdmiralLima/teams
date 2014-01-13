@@ -1,4 +1,4 @@
-package fuzzMUFFIN;
+package team005;
 
 import battlecode.common.*;
 
@@ -89,26 +89,4 @@ public class Sense
 		return senseLocationDirection(rc.senseEnemyHQLocation());
 	}
 	
-	/**
-	 * Senses if there are close by enemies.
-	 * 
-	 * @return boolean - Returns True if there are enemies within sensor range.
-	 * @throws GameActionException
-	 */
-	public static boolean senseEnemies() throws GameActionException
-	{
-		// We need to gather information on our robot to correctly sense the enemies within range.
-		int attackRange = rc.senseRobotInfo(rc.getRobot()).type.sensorRadiusSquared;
-		Class<Robot> robotClass = Robot.class;
-		Team enemyTeam = rc.getTeam().opponent();
-		
-		// Now we can actually find the enemies that are within range.
-		Robot[] close = rc.senseNearbyGameObjects(robotClass, attackRange, enemyTeam);
-		// Did we actually find anything?
-		if (!close.equals(null))
-		{
-			return true;
-		}
-		return false;
-	}
 }
