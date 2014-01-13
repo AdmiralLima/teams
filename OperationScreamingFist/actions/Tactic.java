@@ -22,15 +22,16 @@ public class Tactic {
     public static void soldierRandom() throws GameActionException {
         int action = (rc.getRobot().getID()*rand.nextInt(1001) + 500)%1001;
         // construct PASTR
-        if (action < 5) {
+        if (action < 4) {
             Soldier.constructPastr();
         }
         // attack nearby cunts
-        else if (action < 300) {
-            Attacks.attackRandom();
+        else if (action < 600) {
+            //Attacks.attackRandom();
+            Attacks.interceptAndAttack();
         }
         // move in a random direction
-        else if (action < 600) {
+        else if (action < 700) {
             Soldier.randomMove();
         }
         // suicide bomb enemy PASTRs

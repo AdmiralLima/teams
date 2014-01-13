@@ -24,6 +24,16 @@ public class Attacks {
 		}
 		return false;
 	}
+	
+	public static boolean interceptAndAttack() throws GameActionException {
+	    Robot[] nearbyEnemies = rc.senseNearbyGameObjects(Robot.class,
+                rc.getType().sensorRadiusSquared,
+                rc.getTeam().opponent());
+	    if (nearbyEnemies.length > 0) {
+	        Intercept.intercept(nearbyEnemies[0]);
+        }
+        return false;
+	}
 
 	/**
 	 * attack a random enemy but not the enemy HQ
