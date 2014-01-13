@@ -25,26 +25,26 @@ public interface Strategy
 	 * 
 	 * @param Robotcontroller - The unit to run.
 	 */
-	public void runHQ(RobotController runThis);
+	public void runHQ();
 
 	/**
 	 * Executes one turn of logic for a SOLDIER unit.
 	 * 
 	 * @param Robotcontroller - The unit to run.
 	 */
-	public void runSOLDIER(RobotController runThis);
+	public void runSOLDIER();
 	
 	/**
 	 * Executes one turn of logic for a PASTR unit.
 	 * 
 	 * @param Robotcontroller - The unit to run.
 	 */
-	public void runPASTR(RobotController runThis);
+	public void runPASTR();
 	
 	/**
 	 * Executes one turn of logic for a NIOSETOWER unit.
 	 * 
 	 * @param Robotcontroller - The unit to run.
 	 */
-	public void runNOISETOWER(RobotController runThis);
+	public void runNOISETOWER();
 }
