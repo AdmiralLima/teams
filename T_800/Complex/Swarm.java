@@ -13,7 +13,7 @@ public class Swarm
 	public static boolean swarm(Robot[] friends) throws GameActionException
 	{
 		MapLocation[] friendLocation = new MapLocation[friends.length];
-		for (int i = 0; 0 < friends.length; i++)
+		for (int i = 0; i < friends.length; i++)
 		{
 			if (rc.canSenseObject(friends[i]))
 			{
