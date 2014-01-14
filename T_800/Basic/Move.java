@@ -20,7 +20,7 @@ private static int[] looks = Util.directionalLooks;
      */
     public static boolean move(Direction dir) throws GameActionException
     {        
-        if (!dir.equals(Direction.NONE) || !dir.equals(Direction.OMNI)) {
+        if (dir.equals(Direction.NONE) || dir.equals(Direction.OMNI)) {
             return false;
         }
         for (int look : looks) {

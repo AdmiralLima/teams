@@ -8,6 +8,7 @@ public class Protocol {
 
     // add string messages that you want to use here
     private static String[] messages = new String[] {
+        "default",
         "go to location",
         "enemy spotted at location",
         "something else",

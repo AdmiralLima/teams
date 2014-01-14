@@ -15,6 +15,8 @@ public class RobotPlayer
 	public static Random rand = new Random();
     public static int mapWidth;
     public static int mapHeight;
+    public static MapLocation goal;
+    public static boolean newUnits;
     
 	private static Strategy currentStrategy;
 	
@@ -30,6 +32,8 @@ public class RobotPlayer
 		rand.setSeed(rc.getRobot().getID());
         mapWidth = rc.getMapWidth();
         mapHeight = rc.getMapHeight();
+        goal = new MapLocation(14,15);
+        newUnits = false;
         ///////
 		RobotType ourType = thisRC.getType();
 	    currentStrategy = new Turtle(thisRC);
@@ -48,7 +52,9 @@ public class RobotPlayer
 	    				try
 	    				{
 	    					T_800.Tactic.AttackAndSpawn.execute();
+                            int round = Clock.getRoundNum();
 	    					currentStrategy.runHQ();
+	    					System.out.println("runHQ took " + (Clock.getRoundNum() - round) + " rounds");
 	    				}
 	    				catch (Exception e)
 	    				{

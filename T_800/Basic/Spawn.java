@@ -24,6 +24,7 @@ public class Spawn
 		if (rc.senseObjectAtLocation(rc.getLocation().add(tryThis)) == null)
 		{
 			rc.spawn(tryThis);
+			T_800.RobotPlayer.newUnits = true;
 			return true;
 		}
 		return false;

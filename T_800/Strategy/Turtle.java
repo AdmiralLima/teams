@@ -18,29 +18,47 @@ public class Turtle implements Strategy {
 
     @Override
     public void runHQ() throws GameActionException {
-        // TODO
-        // set new goal location for swarm (set to enemy HQ for now)
-        Protocol.broadcastToRobotsOfType(RobotType.SOLDIER, "go to location", new MapLocation(15,15));
+        MapLocation oldGoal = T_800.RobotPlayer.goal;
+        
+        /////// set new goal here ///////
+        
+        MapLocation newGoal = new MapLocation(15,15);
+        T_800.RobotPlayer.goal = newGoal;
+        
+        /////////////////////////////////
+
+        if (!oldGoal.equals(newGoal) || T_800.RobotPlayer.newUnits) {
+            //System.out.println("HQ broadcasting new goal at " + newGoal.toString());
+            // set new goal location for swarm (set to [15,15] for now)
+            //int bc = Clock.getBytecodeNum();
+            Protocol.broadcastToRobotsOfType(RobotType.SOLDIER, "go to location", newGoal);
+            //System.out.println("used " + (Clock.getBytecodeNum() - bc) + " bc");
+        }
+        
         // set new orders for team
             // if there is no pastr and/or noisetower near hq, get a soldier to build one
-        Robot[] nearby = rc.senseNearbyGameObjects(Robot.class, 1, rc.getTeam().opponent());
+        Robot[] nearby = rc.senseNearbyGameObjects(Robot.class, 2, rc.getTeam());
                 // check if there is a noisetower within squareradius of 1
+        //for (Robot robot : nearby) {System.out.println(robot.toString());}
         Robot soldier = Util.getARobotOfType(RobotType.SOLDIER, nearby);
-        
-        if (soldier != null) {
-        System.out.println("ordering soldier " + soldier.toString());
-        }
+//        
+//        if (soldier != null) {
+//            System.out.println("ordering soldier " + soldier.toString());
+//        }
         
         if (Util.containsRobotOfType(RobotType.NOISETOWER, nearby)) {
                     // if so, check if there is a pastr within squareradius of 1
             if (Util.containsRobotOfType(RobotType.PASTR, nearby)) {
             } else {
+                System.out.println("need PASTR");
                 // if not, tell next soldier within sqrad=1 to construct pastr
                 if (soldier != null) {
+                    System.out.println(soldier.toString() + " could construct PASTR");
                     Protocol.broadcastToRobot(soldier, "construct PASTR");
                 }
             }
         } else {
+            System.out.println("need Noisetower");
             // if not, tell next soldier within sqrad=1 to construct noistwr
             if (soldier != null) {
                 Protocol.broadcastToRobot(soldier, "construct Noisetower");
@@ -61,24 +79,28 @@ public class Turtle implements Strategy {
         else if (order.equals("construct PASTR")) {orderNum = 2;}
         else if (order.equals("construct Noisetower")) {orderNum = 3;}
         
-        if (!(orderNum==1)) {
-            System.out.println("Received order: " + order + " " + m);
-        }
+//        if (!(orderNum==1)) {
+//            System.out.println("Received order: " + order + " " + m + " (order num " + orderNum + ")");
+//        }
         
         switch (orderNum) {
         case 0 : {break;}// be ready to attack enemies
         case 1 : { // move toward goal location and swarm
             Direction dir = rc.getLocation().directionTo(m);
-            T_800.Basic.Move.move(dir);
-            rc.yield();
-            if (rc.isActive()) {T_800.Complex.Swarm.swarm();}
+            //System.out.println("Moving toward " + m.toString() + " in direction " + dir.toString());
+            boolean succeeded = T_800.Basic.Move.move(dir);
+            //System.out.println("Succeeded? " + succeeded);
+//            rc.yield();
+//            if (rc.isActive()) {T_800.Complex.Swarm.swarm();}
             break;
         }
         case 2 : { // construct PASTR
+            System.out.println("Constructing PASTR!");
             rc.construct(RobotType.PASTR);
             break;
         }
         case 3 : { // construct Noisetower
+            System.out.println("Constructing Noisetower!");
             rc.construct(RobotType.NOISETOWER);
             break;
         }
