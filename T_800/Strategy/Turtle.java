@@ -26,16 +26,25 @@ public class Turtle implements Strategy {
         Robot[] nearby = rc.senseNearbyGameObjects(Robot.class, 1, rc.getTeam().opponent());
                 // check if there is a noisetower within squareradius of 1
         Robot soldier = Util.getARobotOfType(RobotType.SOLDIER, nearby);
+        
+        if (soldier != null) {
+        System.out.println("ordering soldier " + soldier.toString());
+        }
+        
         if (Util.containsRobotOfType(RobotType.NOISETOWER, nearby)) {
                     // if so, check if there is a pastr within squareradius of 1
             if (Util.containsRobotOfType(RobotType.PASTR, nearby)) {
             } else {
-                        // if not, tell next soldier within sqrad=1 to construct pastr
-                Protocol.broadcastToRobot(soldier, "construct Noisetower");
+                // if not, tell next soldier within sqrad=1 to construct pastr
+                if (soldier != null) {
+                    Protocol.broadcastToRobot(soldier, "construct PASTR");
+                }
             }
         } else {
-                    // if not, tell next soldier within sqrad=1 to construct noistwr
-            Protocol.broadcastToRobot(soldier, "construct PASTR");
+            // if not, tell next soldier within sqrad=1 to construct noistwr
+            if (soldier != null) {
+                Protocol.broadcastToRobot(soldier, "construct Noisetower");
+            }
         }     
     }
 
@@ -46,10 +55,15 @@ public class Turtle implements Strategy {
         Pair orders = Protocol.readMessage(rc.getRobot());
         MapLocation m = orders.location;
         String order = orders.message;
+        
         int orderNum = 0;
         if (order.equals("go to location")) {orderNum = 1;}
         else if (order.equals("construct PASTR")) {orderNum = 2;}
         else if (order.equals("construct Noisetower")) {orderNum = 3;}
+        
+        if (!(orderNum==1)) {
+            System.out.println("Received order: " + order + " " + m);
+        }
         
         switch (orderNum) {
         case 0 : {break;}// be ready to attack enemies

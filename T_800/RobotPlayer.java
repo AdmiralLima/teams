@@ -33,6 +33,8 @@ public class RobotPlayer
         ///////
 		RobotType ourType = thisRC.getType();
 	    currentStrategy = new Turtle(thisRC);
+	    ///////
+	    Protocol.init();
 	    		
 	    // This loop runs for the duration of the unit's life.
 	    while (true)

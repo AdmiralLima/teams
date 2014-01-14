@@ -78,6 +78,12 @@ public class Protocol {
         return code;
     }
     
+    /**
+     * turns a string and a location into an integer to be broadcast
+     * @param message
+     * @param m
+     * @return
+     */
     public static int encode(String message, MapLocation m) {
         int dictPos = ints.get(message).intValue();
         int loc = Util.locToInt(m);
@@ -86,7 +92,7 @@ public class Protocol {
     }
     
     /**
-     * 
+     * turns an int from the broadcast array back into a string and a location
      * @param code
      * @return a String array of length 3 as follows: ["message", x location, y location]
      */
