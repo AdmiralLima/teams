@@ -53,6 +53,7 @@ public class RobotPlayer
 	    					System.out.println("Caught HQ Exception.");
 	    					e.printStackTrace();
 	    				}
+	    				break;
 	    			}
 	    			case SOLDIER:
 	    			{
@@ -65,6 +66,7 @@ public class RobotPlayer
 	    					System.out.println("Caught SOLDIER Exception.");
 	    					e.printStackTrace();
 	    				}
+	    				break;
 	    			}
 	    			case PASTR:
 	    			{
@@ -77,6 +79,7 @@ public class RobotPlayer
 	    					System.out.println("Caught PASTR Exception.");
 	    					e.printStackTrace();
 	    				}
+	    				break;
 	    			}
 	    			case NOISETOWER:
 	    			{
