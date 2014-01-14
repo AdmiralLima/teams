@@ -14,7 +14,7 @@ public class Attack
 	 * Tries to attack the given location.
 	 * 
 	 * @param MapLocation - Takes the location to be attacks.
-	 * @return boolean - Returns true if the robot executed an attack.
+	 * @return boolean - Returns true if the robot executed an attack, false otherwise.
 	 * @throws GameActionException
 	 */
 	public static boolean attackLocation(MapLocation attackThis) throws GameActionException
