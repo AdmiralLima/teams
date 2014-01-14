@@ -1,8 +1,6 @@
 package T_800;
 
 import java.util.Random;
-
-import OperationScreamingFist.RobotPlayer;
 import battlecode.common.*;
 
 public class Util {
