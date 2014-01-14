@@ -1,5 +1,6 @@
 package T_800.Strategy;
 
+import T_800.Pair;
 import T_800.Protocol;
 import T_800.Util;
 import battlecode.common.*;
@@ -20,6 +21,8 @@ public class Turtle implements Strategy {
     @Override
     public void runHQ() throws GameActionException {
         // TODO
+        // set new goal location for swarm (set to enemy HQ for now)
+        Protocol.broadcastToRobotsOfType(RobotType.SOLDIER, "go to location", rc.senseEnemyHQLocation());
         // set new orders for team
             // if there is no pastr and/or noisetower near hq, get a soldier to build one
         Robot[] nearby = rc.senseNearbyGameObjects(Robot.class, 1, rc.getTeam().opponent());
@@ -35,21 +38,20 @@ public class Turtle implements Strategy {
         } else {
                     // if not, tell next soldier within sqrad=1 to construct noistwr
             Protocol.broadcastToRobot(soldier, "construct PASTR");
-        }
-        // then, set new goal location for swarm
-
+        }     
     }
 
     @Override
-    public void runSOLDIER() {
+    public void runSOLDIER() throws GameActionException {
         // TODO
         // read broadcasted orders from HQ
-        
-        // if within 1 square of HQ
-            // check if hq needs noistwr or pastr
-                // if so, construct
-        // else go to goal location with swarm
-
+        Pair orders = Protocol.readMessage(rc.getRobot());
+        MapLocation m = orders.location;
+        String order = orders.message;
+        int orderNum = 0;
+        if (order.equals("go to location")) {orderNum = 1;}
+        else if (order.equals("construct PASTR")) {orderNum = 2;}
+        else if (order.equals("construct Noisetower")) {orderNum = 3;}
     }
 
     @Override
