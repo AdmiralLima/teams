@@ -38,7 +38,12 @@ public class Swarm
 		}
 		MapLocation desiredLoc = new MapLocation(xTotal/counter, yTotal/counter);
 		Direction desiredDir = rc.getLocation().directionTo(desiredLoc);
-		
-		return false;
+		return T_800.Basic.Move.move(desiredDir);
+	}
+	
+	public static boolean swarm() throws GameActionException
+	{
+		Robot[] friends = rc.senseNearbyGameObjects(Robot.class, 10000, rc.getTeam());
+		return swarm(friends);
 	}
 }
