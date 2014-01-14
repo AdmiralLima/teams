@@ -20,7 +20,7 @@ public class Turtle implements Strategy {
     public void runHQ() throws GameActionException {
         // TODO
         // set new goal location for swarm (set to enemy HQ for now)
-        Protocol.broadcastToRobotsOfType(RobotType.SOLDIER, "go to location", rc.senseEnemyHQLocation());
+        Protocol.broadcastToRobotsOfType(RobotType.SOLDIER, "go to location", new MapLocation(10,10));
         // set new orders for team
             // if there is no pastr and/or noisetower near hq, get a soldier to build one
         Robot[] nearby = rc.senseNearbyGameObjects(Robot.class, 1, rc.getTeam().opponent());
@@ -53,10 +53,19 @@ public class Turtle implements Strategy {
         
         switch (orderNum) {
         case 0 : { }// be ready to attack enemies
-        case 1 : {
+        case 1 : { // move toward goal location and swarm
             Direction dir = rc.getLocation().directionTo(m);
             T_800.Basic.Move.move(dir);
+            rc.yield();
+            if (rc.isActive()) {T_800.Complex.Swarm.swarm();}
         }
+        case 2 : { // construct PASTR
+            rc.construct(RobotType.PASTR);
+        }
+        case 3 : { // construct Noisetower
+            rc.construct(RobotType.NOISETOWER);
+        }
+        default : { } // chill
         }
     }
 
