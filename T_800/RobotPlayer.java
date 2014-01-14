@@ -51,7 +51,6 @@ public class RobotPlayer
 	    			{
 	    				try
 	    				{
-	    					T_800.Tactic.AttackAndSpawn.execute();
                             int round = Clock.getRoundNum();
 	    					currentStrategy.runHQ();
 	    					System.out.println("runHQ took " + (Clock.getRoundNum() - round) + " rounds");
