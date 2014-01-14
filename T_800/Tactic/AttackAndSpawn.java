@@ -17,7 +17,7 @@ public class AttackAndSpawn
 	{
 		
 		// Try to attack nearby enemies.
-		if (!T_800.Complex.Attack.attackWithPriority(RobotType.SOLDIER, RobotType.NOISETOWER))
+		if (!T_800.Complex.Attack.attackRandomNotHQ())
 		{
 			
 			// Spawn a SOLDIER if we did not attack.
