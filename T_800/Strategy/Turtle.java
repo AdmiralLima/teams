@@ -63,7 +63,10 @@ public class Turtle implements Strategy {
             if (soldier != null) {
                 Protocol.broadcastToRobot(soldier, "construct Noisetower");
             }
-        }     
+        }
+        
+        // now spawn guys
+        T_800.Tactic.AttackAndSpawn.execute();
     }
 
     @Override
@@ -90,8 +93,8 @@ public class Turtle implements Strategy {
             //System.out.println("Moving toward " + m.toString() + " in direction " + dir.toString());
             boolean succeeded = T_800.Basic.Move.move(dir);
             //System.out.println("Succeeded? " + succeeded);
-//            rc.yield();
-//            if (rc.isActive()) {T_800.Complex.Swarm.swarm();}
+            rc.yield();
+            if (rc.isActive()) {T_800.Complex.Swarm.swarm();}
             break;
         }
         case 2 : { // construct PASTR
