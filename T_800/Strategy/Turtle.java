@@ -1,5 +1,6 @@
 package T_800.Strategy;
 
+import T_800.Protocol;
 import T_800.Util;
 import battlecode.common.*;
 
@@ -23,14 +24,17 @@ public class Turtle implements Strategy {
             // if there is no pastr and/or noisetower near hq, get a soldier to build one
         Robot[] nearby = rc.senseNearbyGameObjects(Robot.class, 1, rc.getTeam().opponent());
                 // check if there is a noisetower within squareradius of 1
+        Robot soldier = Util.getARobotOfType(RobotType.SOLDIER, nearby);
         if (Util.containsRobotOfType(RobotType.NOISETOWER, nearby)) {
                     // if so, check if there is a pastr within squareradius of 1
             if (Util.containsRobotOfType(RobotType.PASTR, nearby)) {
             } else {
                         // if not, tell next soldier within sqrad=1 to construct pastr
+                Protocol.broadcastToRobot(soldier, "construct Noisetower");
             }
         } else {
                     // if not, tell next soldier within sqrad=1 to construct noistwr
+            Protocol.broadcastToRobot(soldier, "construct PASTR");
         }
         // then, set new goal location for swarm
 

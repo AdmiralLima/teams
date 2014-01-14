@@ -10,29 +10,47 @@ public class Protocol {
     private static String[] messages = new String[] {
         "go to location",
         "enemy spotted at location",
-        "something else"
+        "something else",
+        "construct PASTR",
+        "construct Noisetower"
         };
     
+    // reading methods
+    public static Pair readMessage(Robot robot) throws GameActionException {
+        String[] message = decode(rc.readBroadcast(robot.getID()));
+        MapLocation m = new MapLocation(Integer.parseInt(message[1]),Integer.parseInt(message[2]));
+        return new Pair(message[0], m);
+    }
     
     // messaging methods
+    /**
+     * sends a message, maplocation to an invididual robot
+     * @param robot
+     * @param message
+     * @throws GameActionException
+     */
     public static void broadcastToRobot(Robot robot, String message) throws GameActionException {
         rc.broadcast(robot.getID(), encode(message));
     }
-    public static void broadcastToRobot(Robot robot, String message, MapLocation m) {
+    public static void broadcastToRobot(Robot robot, String message, MapLocation m) throws GameActionException {
         rc.broadcast(robot.getID(), encode(message, m));
     }
     
+    /**
+     * sends a message to all robots of type on their ID channel
+     * @param type
+     * @param message, maplocation
+     * @throws GameActionException
+     */
     public static void broadcastToRobotsOfType(RobotType type, String message) throws GameActionException {
         int code = encode(message);
-        Robot[] robots = rc.senseNearbyGameObjects(Robot.class, 10000, rc.getTeam());
-        for (Robot robot : robots) {
-            RobotType thistype = rc.senseRobotInfo(robot).type;
-            if (type.equals(thistype)) {
-                rc.broadcast(robot.getID(), code);
-            }
-        }
+        broadcastToRobotsOfType(type, code);
     }
-    public static void broadcastToRobotsOfType(RobotType type, int code) {
+    public static void broadcastToRobotsOfType(RobotType type, String message, MapLocation m) throws GameActionException {
+        int code = encode(message,m);
+        broadcastToRobotsOfType(type, code);
+    }
+    public static void broadcastToRobotsOfType(RobotType type, int code) throws GameActionException {
         Robot[] robots = rc.senseNearbyGameObjects(Robot.class, 10000, rc.getTeam());
         for (Robot robot : robots) {
             RobotType thistype = rc.senseRobotInfo(robot).type;

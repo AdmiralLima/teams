@@ -30,6 +30,16 @@ public class Util {
         return false;
     }
     
+    public static Robot getARobotOfType(RobotType type, Robot[] robots) throws GameActionException {
+        for (Robot robot : robots) {
+            RobotType thistype = rc.senseRobotInfo(robot).type;
+            if (type.equals(thistype)) {
+                return robot;
+            }
+        }
+        return null;
+    }
+    
     public static boolean isRobot(GameObject g) {
         return g.getClass().equals(Robot.class);
     }
