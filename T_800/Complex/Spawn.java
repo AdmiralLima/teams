@@ -19,7 +19,7 @@ public class Spawn
 	public static boolean spawn() throws GameActionException
 	{
 		Direction desired = rc.getLocation().directionTo(rc.senseEnemyHQLocation());
-		for (int i = 0; i < 7; i++)
+		for (int i = 0; i < 8; i++)
 		{
 			if (T_800.Basic.Spawn.spawnDirection(desired))
 			{
