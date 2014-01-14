@@ -63,5 +63,6 @@ public class Util {
     ///////CONSTANTS///////
     
     public static final Direction[] directions = {Direction.NORTH, Direction.NORTH_EAST, Direction.EAST, Direction.SOUTH_EAST, Direction.SOUTH, Direction.SOUTH_WEST, Direction.WEST, Direction.NORTH_WEST};
+    public static final int[] directionalLooks = {0,1,-1,2,-2,3,-3,4};
     
 }

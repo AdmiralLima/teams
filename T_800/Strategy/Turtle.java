@@ -1,8 +1,6 @@
 package T_800.Strategy;
 
-import T_800.Pair;
-import T_800.Protocol;
-import T_800.Util;
+import T_800.*;
 import battlecode.common.*;
 
 public class Turtle implements Strategy {
@@ -52,6 +50,14 @@ public class Turtle implements Strategy {
         if (order.equals("go to location")) {orderNum = 1;}
         else if (order.equals("construct PASTR")) {orderNum = 2;}
         else if (order.equals("construct Noisetower")) {orderNum = 3;}
+        
+        switch (orderNum) {
+        case 0 : { }// be ready to attack enemies
+        case 1 : {
+            Direction dir = rc.getLocation().directionTo(m);
+            T_800.Basic.Move.move(dir);
+        }
+        }
     }
 
     @Override

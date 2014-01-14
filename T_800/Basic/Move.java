@@ -1,6 +1,7 @@
 package T_800.Basic;
 
 import T_800.RobotPlayer;
+import T_800.Util;
 import battlecode.common.Direction;
 import battlecode.common.GameActionException;
 import battlecode.common.RobotController;
@@ -8,6 +9,7 @@ import battlecode.common.RobotController;
 public class Move {
 
 private static RobotController rc = RobotPlayer.rc;
+private static int[] looks = Util.directionalLooks;
     
     /**
      * Tries to move in given direction
@@ -18,11 +20,22 @@ private static RobotController rc = RobotPlayer.rc;
      */
     public static boolean move(Direction dir) throws GameActionException
     {        
-        // If we can attack the location we do.
-        if (rc.canMove(dir))
-        {
-            rc.move(dir);
-            return true;
+        for (int look : looks) {
+            Direction movedir = dir;
+            // If we can move we do
+            switch (look) {
+            case 0 : {movedir = dir;}
+            case 1 : {movedir = dir.rotateRight();}
+            case -1 : {movedir = dir.rotateLeft();}
+            case 2 : {movedir = dir.rotateRight(); movedir = movedir.rotateRight();}
+            case -2 : {movedir = dir.rotateLeft(); movedir = movedir.rotateLeft();}
+            default : {break;}
+            }
+            
+            if (rc.canMove(movedir)) {
+                rc.move(movedir);
+                return true;
+            }
         }
         return false;
     }
