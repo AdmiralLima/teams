@@ -63,7 +63,10 @@ public class Turtle implements Strategy {
             if (soldier != null) {
                 Protocol.broadcastToRobot(soldier, "construct Noisetower");
             }
-        }     
+        }
+        
+        // now spawn guys
+        T_800.Tactic.AttackAndSpawn.execute();
     }
 
     @Override
