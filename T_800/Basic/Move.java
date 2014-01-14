@@ -20,6 +20,9 @@ private static int[] looks = Util.directionalLooks;
      */
     public static boolean move(Direction dir) throws GameActionException
     {        
+        if (!(dir.equals(Direction.NONE) || dir.equals(Direction.OMNI))) {
+            return false;
+        }
         for (int look : looks) {
             Direction movedir = dir;
             // If we can move we do
@@ -29,7 +32,7 @@ private static int[] looks = Util.directionalLooks;
             case -1 : {movedir = dir.rotateLeft(); break;}
             case 2 : {movedir = dir.rotateRight(); movedir = movedir.rotateRight(); break;}
             case -2 : {movedir = dir.rotateLeft(); movedir = movedir.rotateLeft(); break;}
-            default : {break;}
+            default : {return false; }
             }
             
             if (rc.canMove(movedir)) {

@@ -55,9 +55,7 @@ public class Turtle implements Strategy {
         case 0 : {break;}// be ready to attack enemies
         case 1 : { // move toward goal location and swarm
             Direction dir = rc.getLocation().directionTo(m);
-            if (!(dir.equals(Direction.NONE) || dir.equals(Direction.OMNI))) {
-                T_800.Basic.Move.move(dir);
-            }
+            T_800.Basic.Move.move(dir);
             rc.yield();
             if (rc.isActive()) {T_800.Complex.Swarm.swarm();}
             break;
