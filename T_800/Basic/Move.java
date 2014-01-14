@@ -24,11 +24,11 @@ private static int[] looks = Util.directionalLooks;
             Direction movedir = dir;
             // If we can move we do
             switch (look) {
-            case 0 : {movedir = dir;}
-            case 1 : {movedir = dir.rotateRight();}
-            case -1 : {movedir = dir.rotateLeft();}
-            case 2 : {movedir = dir.rotateRight(); movedir = movedir.rotateRight();}
-            case -2 : {movedir = dir.rotateLeft(); movedir = movedir.rotateLeft();}
+            case 0 : {movedir = dir; break;}
+            case 1 : {movedir = dir.rotateRight(); break;}
+            case -1 : {movedir = dir.rotateLeft(); break;}
+            case 2 : {movedir = dir.rotateRight(); movedir = movedir.rotateRight(); break;}
+            case -2 : {movedir = dir.rotateLeft(); movedir = movedir.rotateLeft(); break;}
             default : {break;}
             }
             

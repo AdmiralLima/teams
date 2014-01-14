@@ -7,10 +7,10 @@ import battlecode.common.*;
 
 public class Util {
     
-    public static RobotController rc = RobotPlayer.rc;
-    private static Random rand = RobotPlayer.rand;
-    public static int mapWidth = RobotPlayer.mapWidth;
-    public static int mapHeight = RobotPlayer.mapHeight;
+    public static RobotController rc = T_800.RobotPlayer.rc;
+    private static Random rand = T_800.RobotPlayer.rand;
+    public static int mapWidth = T_800.RobotPlayer.mapWidth;
+    public static int mapHeight = T_800.RobotPlayer.mapHeight;
     
     /**
      * Util contains very basic utility methods, constants and other miscellaneous things that 

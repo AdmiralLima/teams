@@ -1,5 +1,7 @@
 package T_800;
 
+import java.util.Random;
+
 import T_800.Strategy.*;
 import battlecode.common.*;
 
@@ -9,6 +11,11 @@ import battlecode.common.*;
 public class RobotPlayer 
 {
 	public static RobotController rc;
+	
+	public static Random rand = new Random();
+    public static int mapWidth;
+    public static int mapHeight;
+    
 	private static Strategy currentStrategy;
 	
 	/**
@@ -20,6 +27,10 @@ public class RobotPlayer
 	public static void run(RobotController thisRC) 
 	{
 		rc = thisRC;
+		rand.setSeed(rc.getRobot().getID());
+        mapWidth = rc.getMapWidth();
+        mapHeight = rc.getMapHeight();
+        ///////
 		RobotType ourType = thisRC.getType();
 	    currentStrategy = new Turtle(thisRC);
 	    		

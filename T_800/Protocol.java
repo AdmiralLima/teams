@@ -60,7 +60,7 @@ public class Protocol {
         }
     }
     
-    private static RobotController rc = RobotPlayer.rc;
+    private static RobotController rc = T_800.RobotPlayer.rc;
     private static int msgsLength = messages.length;
     public static HashMap<String,Integer> ints = new HashMap<String,Integer>(msgsLength);
     
