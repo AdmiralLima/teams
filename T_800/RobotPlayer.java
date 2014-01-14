@@ -34,6 +34,7 @@ public class RobotPlayer
 	    			{
 	    				try
 	    				{
+	    					T_800.Tactic.AttackAndSpawn.execute();
 	    					currentStrategy.runHQ();
 	    				}
 	    				catch (Exception e)
