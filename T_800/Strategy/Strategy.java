@@ -24,27 +24,28 @@ public interface Strategy
 	 * Executes one turn of logic for an HQ unit.
 	 * 
 	 * @param Robotcontroller - The unit to run.
+	 * @throws GameActionException 
 	 */
-	public void runHQ();
+	public void runHQ() throws GameActionException;
 
 	/**
 	 * Executes one turn of logic for a SOLDIER unit.
 	 * 
 	 * @param Robotcontroller - The unit to run.
 	 */
-	public void runSOLDIER();
+	public void runSOLDIER() throws GameActionException;
 	
 	/**
 	 * Executes one turn of logic for a PASTR unit.
 	 * 
 	 * @param Robotcontroller - The unit to run.
 	 */
-	public void runPASTR();
+	public void runPASTR() throws GameActionException;
 	
 	/**
 	 * Executes one turn of logic for a NIOSETOWER unit.
 	 * 
 	 * @param Robotcontroller - The unit to run.
 	 */
-	public void runNOISETOWER();
+	public void runNOISETOWER() throws GameActionException;
 }
