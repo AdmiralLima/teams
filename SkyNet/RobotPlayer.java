@@ -63,7 +63,8 @@ public class RobotPlayer
     				// Lets run our HQ.
     				if (ourType.equals(RobotType.HQ))
     				{
-    					HQ.runHQ();
+    					thisRC.attackSquare(thisRC.getLocation().add(Direction.EAST));
+    					thisRC.yield();
     				}
     				
     				// Lets run our SOLDIERs.
@@ -77,6 +78,7 @@ public class RobotPlayer
     				{
     					NT.runNOISETOWER();
     				}
+    				
     			}
     			
     			// Do not forget to yield or you will hate yourself forever.
