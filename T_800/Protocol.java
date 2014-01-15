@@ -11,7 +11,6 @@ public class Protocol {
         "default",
         "go to location",
         "enemy spotted at location",
-        "something else",
         "construct PASTR",
         "construct Noisetower"
         };

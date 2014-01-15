@@ -28,11 +28,7 @@ public class Turtle implements Strategy {
         /////////////////////////////////
 
         if (!oldGoal.equals(newGoal) || T_800.RobotPlayer.newUnits) {
-            //System.out.println("HQ broadcasting new goal at " + newGoal.toString());
-            // set new goal location for swarm (set to [15,15] for now)
-            //int bc = Clock.getBytecodeNum();
-            Protocol.broadcastToRobotsOfType(RobotType.SOLDIER, "go to location", newGoal);
-            //System.out.println("used " + (Clock.getBytecodeNum() - bc) + " bc");
+            Comm.orderMove(RobotType.SOLDIER, newGoal);
         }
         
         // set new orders for team
@@ -41,27 +37,20 @@ public class Turtle implements Strategy {
                 // check if there is a noisetower within squareradius of 1
         //for (Robot robot : nearby) {System.out.println(robot.toString());}
         Robot soldier = Util.getARobotOfType(RobotType.SOLDIER, nearby);
-//        
-//        if (soldier != null) {
-//            System.out.println("ordering soldier " + soldier.toString());
-//        }
         
         if (Util.containsRobotOfType(RobotType.NOISETOWER, nearby)) {
                     // if so, check if there is a pastr within squareradius of 1
             if (Util.containsRobotOfType(RobotType.PASTR, nearby)) {
             } else {
-                System.out.println("need PASTR");
                 // if not, tell next soldier within sqrad=1 to construct pastr
                 if (soldier != null) {
-                    System.out.println(soldier.toString() + " could construct PASTR");
-                    Protocol.broadcastToRobot(soldier, "construct PASTR");
+                    Comm.orderConstruct(soldier, RobotType.PASTR);
                 }
             }
         } else {
-            System.out.println("need Noisetower");
             // if not, tell next soldier within sqrad=1 to construct noistwr
             if (soldier != null) {
-                Protocol.broadcastToRobot(soldier, "construct Noisetower");
+                Comm.orderConstruct(soldier, RobotType.NOISETOWER);
             }
         }
         
@@ -72,56 +61,44 @@ public class Turtle implements Strategy {
     @Override
     public void runSOLDIER() throws GameActionException {
         // TODO
-        // read broadcasted orders from HQ
-        Pair orders = Protocol.readMessage(rc.getRobot());
-        MapLocation m = orders.location;
-        String order = orders.message;
         
-        int orderNum = 0;
-        if (order.equals("go to location")) {orderNum = 1;}
-        else if (order.equals("construct PASTR")) {orderNum = 2;}
-        else if (order.equals("construct Noisetower")) {orderNum = 3;}
-        
-//        if (!(orderNum==1)) {
-//            System.out.println("Received order: " + order + " " + m + " (order num " + orderNum + ")");
-//        }
-        
-        switch (orderNum) {
-        case 0 : {break;}// be ready to attack enemies
-        case 1 : { // move toward goal location and swarm
-            Direction dir = rc.getLocation().directionTo(m);
-            //System.out.println("Moving toward " + m.toString() + " in direction " + dir.toString());
-            boolean succeeded = T_800.Basic.Move.move(dir);
-            //System.out.println("Succeeded? " + succeeded);
-            rc.yield();
-            if (rc.isActive()) {T_800.Complex.Swarm.swarm();}
-            break;
-        }
-        case 2 : { // construct PASTR
-            System.out.println("Constructing PASTR!");
-            rc.construct(RobotType.PASTR);
-            break;
-        }
-        case 3 : { // construct Noisetower
-            System.out.println("Constructing Noisetower!");
-            rc.construct(RobotType.NOISETOWER);
-            break;
-        }
-        default : {break;} // chill
-        }
     }
 
     @Override
-    public void runPASTR() {
+    public void runPASTR() throws GameActionException {
         // chill my neezy
 
     }
 
     @Override
-    public void runNOISETOWER() {
+    public void runNOISETOWER() throws GameActionException {
         // TODO
         // radially drag in cows to the PASTR
-
+        int maxDistance = (int) Math.sqrt(RobotType.NOISETOWER.attackRadiusMaxSquared);
+        int currentDistance = maxDistance;
+        Direction direction = Direction.NORTH_EAST;
+        
+        MapLocation attackThis = rc.getLocation().add(direction, currentDistance);
+        // How do we herd?
+        if (currentDistance > 1)
+        {
+            if (rc.canAttackSquare(attackThis))
+            {
+                rc.attackSquare(attackThis);
+            }
+            currentDistance = currentDistance - 2;
+            rc.yield();
+            runNOISETOWER();
+        }
+        
+        // Now we need to reset our herding.
+        else 
+        {
+            currentDistance = maxDistance;
+            direction = direction.rotateRight();
+            rc.yield();
+            this.runNOISETOWER();
+        }
     }
 
 }
