@@ -24,10 +24,15 @@ public class Comm {
         switch (orderNum) {
         case 0 : {break;}// be ready to attack enemies
         case 1 : { // move toward goal location and swarm
-            Direction dir = rc.getLocation().directionTo(m);
-            T_800.Basic.Move.move(dir);
-            rc.yield();
-            if (rc.isActive()) {T_800.Complex.Swarm.swarm();}
+            // TODO : put in better movement algorithm !!
+//            Direction dir = rc.getLocation().directionTo(m);
+//            T_800.Basic.Move.move(dir);
+            System.out.println("Soldier received move order to location " + m.toString());
+            MapLocation[] path = Nav.getPath(rc.getLocation(), m);
+            System.out.println("Soldier following path " + path);
+            Nav.followPath(path);
+//            rc.yield();
+//            if (rc.isActive()) {T_800.Complex.Swarm.swarm();}
             break;
         }
         case 2 : { // construct PASTR

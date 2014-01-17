@@ -22,9 +22,9 @@ public class RobotPlayer{
             myLoc = rc.getLocation();
             try {
                 if(rc.getType()==RobotType.HQ){//if I'm a headquarters
-                    runHeadquarters();
+                    //runHeadquarters();
                 }else if(rc.getType()==RobotType.SOLDIER){
-                    runSoldier();
+                    //runSoldier();
                 }
             } catch (Exception e) {e.printStackTrace();}
             rc.yield();

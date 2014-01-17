@@ -22,7 +22,8 @@ public class Turtle implements Strategy {
         
         /////// set new goal here ///////
         
-        MapLocation newGoal = new MapLocation(15,15);
+        //MapLocation newGoal = new MapLocation(15,15);
+        MapLocation newGoal = rc.senseEnemyHQLocation();
         T_800.RobotPlayer.goal = newGoal;
         
         /////////////////////////////////
@@ -30,7 +31,7 @@ public class Turtle implements Strategy {
         if (!oldGoal.equals(newGoal) || T_800.RobotPlayer.newUnits) {
             Comm.orderMove(RobotType.SOLDIER, newGoal);
         }
-        
+        /*
         // set new orders for team
             // if there is no pastr and/or noisetower near hq, get a soldier to build one
         Robot[] nearby = rc.senseNearbyGameObjects(Robot.class, 2, rc.getTeam());
@@ -53,6 +54,7 @@ public class Turtle implements Strategy {
                 Comm.orderConstruct(soldier, RobotType.NOISETOWER);
             }
         }
+        */
         
         // now spawn guys
         T_800.Tactic.AttackAndSpawn.execute();
@@ -61,6 +63,7 @@ public class Turtle implements Strategy {
     @Override
     public void runSOLDIER() throws GameActionException {
         // TODO
+        Comm.followOrders();
         
     }
 
