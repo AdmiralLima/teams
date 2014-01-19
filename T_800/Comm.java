@@ -5,6 +5,7 @@ import battlecode.common.*;
 public class Comm {
     
     private static RobotController rc = T_800.RobotPlayer.rc;
+    public static boolean done = false;
     
     /**
      * method for soldiers to follow orders
@@ -22,28 +23,37 @@ public class Comm {
         else if (order.equals("construct Noisetower")) {orderNum = 3;}
         
         switch (orderNum) {
-        case 0 : {break;}// be ready to attack enemies
-        case 1 : { // move toward goal location and swarm
+        case 0 : break;// be ready to attack enemies
+        case 1 : // move toward goal location and swarm
             // TODO : put in better movement algorithm !!
-//            Direction dir = rc.getLocation().directionTo(m);
-//            T_800.Basic.Move.move(dir);
-            System.out.println("Soldier received move order to location " + m.toString());
-            MapLocation[] path = Nav.getPath(rc.getLocation(), m);
-            System.out.println("Soldier following path " + path);
-            Nav.followPath(path);
+            if (!done) {
+                int bc = Clock.getBytecodeNum();
+                int round = Clock.getRoundNum();
+                MapLocation[] path = Nav.getPath(rc.getLocation(), m);
+                System.out.println("Nav.getPath used " + ((Clock.getRoundNum() - round)*10000 + (Clock.getBytecodeNum() - bc)) + " bc");
+            //MapLocation[] path = new MapLocation[] {new MapLocation(5,9),new MapLocation(6,10),new MapLocation(7,11),new MapLocation(8,12),new MapLocation(9,13),new MapLocation(10,14)}; 
+                for (int i = 0; i < path.length; i++) {
+                    if (path[i]!=null) {
+                        System.out.println("path at step " + i + " is " + path[i].toString());
+                    } else {
+                        System.out.println("path at step " + i + " is null");
+                    }
+                }
+                String stringPath = RRT.stringPath(path);
+                System.out.println(stringPath);
+                Nav.followPath(path);
+                done = true;
+            }
 //            rc.yield();
 //            if (rc.isActive()) {T_800.Complex.Swarm.swarm();}
             break;
-        }
-        case 2 : { // construct PASTR
+        case 2 : // construct PASTR
             rc.construct(RobotType.PASTR);
             break;
-        }
-        case 3 : { // construct Noisetower
+        case 3 : // construct Noisetower
             rc.construct(RobotType.NOISETOWER);
             break;
-        }
-        default : {break;} // chill
+        default : break; // chill
         }
     }
     

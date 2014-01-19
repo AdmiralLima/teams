@@ -39,7 +39,7 @@ public class MapBuilder {
      * @throws GameActionException 
      * 
     */
-    public static void hqBuildMap() throws GameActionException {
+    public static void buildMap() throws GameActionException {
         int value = 1;
         for (int x = 0; x < mapWidth; x++) {
             for (int y = 0; y < mapHeight; y++) {
@@ -54,6 +54,7 @@ public class MapBuilder {
                 writeMap(m, value);
             }
         }
+        RobotPlayer.mapReady = true;
     }
     
     public static String stringMap() throws GameActionException {

@@ -17,6 +17,8 @@ public class RobotPlayer
     public static int mapHeight;
     public static MapLocation goal;
     public static boolean newUnits;
+    public static boolean mapReady;
+    
     
 	private static Strategy currentStrategy;
 	
@@ -32,6 +34,7 @@ public class RobotPlayer
 		rand.setSeed(rc.getRobot().getID());
         mapWidth = rc.getMapWidth();
         mapHeight = rc.getMapHeight();
+        mapReady = false;
         goal = new MapLocation(14,15);
         newUnits = false;
         ///////
@@ -39,6 +42,29 @@ public class RobotPlayer
 	    currentStrategy = new Turtle(thisRC);
 	    ///////
 	    Protocol.init();
+	    
+	    // build map representation
+        try {
+            int bc = Clock.getBytecodeNum();
+            int round = Clock.getRoundNum();
+            MapBuilder.buildMap();
+            System.out.println("MapBuilder.buildMap() used " + ((Clock.getRoundNum() - round)*10000 + (Clock.getBytecodeNum() - bc)) + " bc");
+            //String map = MapBuilder.stringMap();
+            //System.out.println(map);
+        } catch (GameActionException e1) {
+            // TODO Auto-generated catch block
+            e1.printStackTrace();
+        }
+
+	    
+	    if (ourType == RobotType.HQ) {
+	        try {
+                rc.spawn(Direction.EAST);
+            } catch (GameActionException e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            }
+	    }
 	    		
 	    // This loop runs for the duration of the unit's life.
 	    while (true)

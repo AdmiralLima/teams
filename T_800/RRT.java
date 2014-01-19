@@ -30,6 +30,8 @@ public class RRT {
         numVertices = 1;
     }
     
+    // TODO: make a way of prettily printing out the path that the RRT gets for debugging purposes
+    
     public static MapLocation[] getPath(MapLocation start, MapLocation goal) {
         return getPath(start, goal, 5);
     }
@@ -40,11 +42,13 @@ public class RRT {
         MapLocation newLoc = start;
         
         while (newLoc.distanceSquaredTo(goal) > range) {
+            System.out.println("searching...");
             MapLocation randomLoc = Util.randomLoc();
+            // TODO: check that randomLoc is not in an obstacle
             MapLocation near = tree.nearestVertex(randomLoc);
             MapLocation[] feasible = feasible(near, randomLoc);
             
-            if (feasible != null) {
+            if (feasible != null && !near.equals(randomLoc)) {
                 newLoc = randomLoc;
                 tree.add(newLoc, near, feasible);                
             }
@@ -56,11 +60,13 @@ public class RRT {
         MapLocation[] nextPath = tree.pathTo[parent.x][parent.y].path; 
         
         while (parent != null && !parent.equals(start)) {
+            System.out.println("working back from " + next.toString());
             nextPath = tree.pathTo[parent.x][parent.y].path;
             path = Util.join(nextPath, path);
             next = parent;
             parent = tree.getParent[next.x][next.y];
         }
+        System.out.println("Done!");
         
         return path;
     }
@@ -86,7 +92,7 @@ public class RRT {
      * Gets the nearest vertex to a given maplocation
      */
     public MapLocation nearestVertex(MapLocation child) {
-        System.out.println("numVertices = " + numVertices + " and vertices = " + vertices[0] + " " + vertices[1]);
+        //System.out.println("numVertices = " + numVertices + " and vertices = " + vertices[0] + " " + vertices[1]);
         MapLocation nearest = vertices[numVertices-1];
         int nearestDist = nearest.distanceSquaredTo(child);
         for (int i = numVertices-2; i >= 0; i--) {
@@ -109,25 +115,31 @@ public class RRT {
      * @return
      */
     public static MapLocation[] feasible(MapLocation parent, MapLocation child) {
+        //TODO: this seems to be allowing paths that pass through obstacles
+        int guessLength = 200;
+        
         MapLocation next = parent;
-        MapLocation[] path = new MapLocation[200];
+        MapLocation[] path = new MapLocation[guessLength];
         
         boolean canMove = true;
         
-        for (int i = 0; i < 200 && canMove; i++) {
+        for (int i = 0; i < guessLength && canMove; i++) {
             
             next = next.add(next.directionTo(child));
 
             int nextInt = MapBuilder.readMap(next);
+            // check that the next location is either empty or a road
             canMove = (nextInt == 0 || nextInt == 3);
             
             if (canMove) {
                 path[i] = next;
+                if (next.equals(child)) {
+                    path = Util.trimNullPoints(path, i+1);
+                    return path;
+                }
             }
             
-            if (next.equals(child)) {
-                return path;
-            }
+
         }
         return null;
     }
@@ -136,6 +148,43 @@ public class RRT {
 //        MapLocation next = new MapLocation(rand.nextInt(mapWidth), rand.nextInt(mapHeight));
 //        return next;
 //    }
+    
+    public static String stringPath(MapLocation[] path) {
+        int[][] gamemap = gameMap.clone();
+        for (MapLocation point : path) {
+            //System.out.println(point != null);
+            if (point != null) {
+                gamemap[point.x][point.y] = -1;
+            }
+        }
+        
+        String[] map = new String[mapWidth];
+        int terrain = 1;
+        for (int y = 0; y < mapHeight; y++) {
+            String row = "";
+            for (int x = 0; x < mapWidth; x++) {
+                //MapLocation m = new MapLocation(x,y);
+                //terrain = readMap(m);
+                terrain = gamemap[x][y];
+                String c = "";
+                switch (terrain) {
+                case -1 : c ="*"; break;
+                case 0 : c = " "; break;
+                case 1 : c = ""; break;
+                case 2 : c = "X"; break;
+                case 3 : c = "-"; break;
+                }
+                row = row.concat(String.valueOf(c));
+            }
+            map[y] = row;
+        }
+        String toPrint = "\n";
+        for (String row : map) {
+            toPrint = toPrint.concat(row);
+            toPrint = toPrint.concat("\n");
+        }
+        return toPrint;
+    }
     
     private class Path {
         

@@ -18,18 +18,20 @@ public class Turtle implements Strategy {
 
     @Override
     public void runHQ() throws GameActionException {
-        MapLocation oldGoal = T_800.RobotPlayer.goal;
-        
-        /////// set new goal here ///////
-        
-        //MapLocation newGoal = new MapLocation(15,15);
-        MapLocation newGoal = rc.senseEnemyHQLocation();
-        T_800.RobotPlayer.goal = newGoal;
-        
-        /////////////////////////////////
+        if (RobotPlayer.mapReady) {
+            MapLocation oldGoal = T_800.RobotPlayer.goal;
 
-        if (!oldGoal.equals(newGoal) || T_800.RobotPlayer.newUnits) {
-            Comm.orderMove(RobotType.SOLDIER, newGoal);
+            /////// set new goal here ///////
+
+            //MapLocation newGoal = new MapLocation(15,15);
+            MapLocation newGoal = rc.senseEnemyHQLocation();
+            T_800.RobotPlayer.goal = newGoal;
+
+            /////////////////////////////////
+
+            if (!oldGoal.equals(newGoal) || T_800.RobotPlayer.newUnits) {
+                Comm.orderMove(RobotType.SOLDIER, newGoal);
+            }
         }
         /*
         // set new orders for team
@@ -57,7 +59,7 @@ public class Turtle implements Strategy {
         */
         
         // now spawn guys
-        T_800.Tactic.AttackAndSpawn.execute();
+        //T_800.Tactic.AttackAndSpawn.execute();
     }
 
     @Override

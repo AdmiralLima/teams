@@ -58,6 +58,18 @@ public class Util {
         return new MapLocation(i%mapWidth, i/mapWidth);
     }
     
+    public static MapLocation[] trimNullPoints(MapLocation[] path, int pathLength) {
+        MapLocation[] trimPath = new MapLocation[pathLength];
+        int pointCount = 0;
+        for (MapLocation point : path) {
+            if (point != null) {
+                trimPath[pointCount] = point;
+                pointCount+=1;
+            }
+        }
+        return trimPath;
+    }
+    
     /** 
      * 
      * @param patha
