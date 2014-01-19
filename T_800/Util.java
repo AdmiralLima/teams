@@ -58,6 +58,35 @@ public class Util {
         return new MapLocation(i%mapWidth, i/mapWidth);
     }
     
+    public static MapLocation[] trimNullPoints(MapLocation[] path, int pathLength) {
+        MapLocation[] trimPath = new MapLocation[pathLength];
+        int pointCount = 0;
+        for (MapLocation point : path) {
+            if (point != null) {
+                trimPath[pointCount] = point;
+                pointCount+=1;
+            }
+        }
+        return trimPath;
+    }
+    
+    /** 
+     * 
+     * @param patha
+     * @param pathb
+     * @return path with patha appended to pathb
+     */
+    public static MapLocation[] join(MapLocation[] patha, MapLocation[] pathb) {
+        
+        int alen = patha.length;
+        int blen = pathb.length;
+        MapLocation[] path = new MapLocation[alen + blen];
+        System.arraycopy(patha, 0, path, 0, alen);
+        System.arraycopy(pathb, 0, path, alen, blen);
+        
+        return path;
+    }
+    
     ///////CONSTANTS///////
     
     public static final Direction[] directions = {Direction.NORTH, Direction.NORTH_EAST, Direction.EAST, Direction.SOUTH_EAST, Direction.SOUTH, Direction.SOUTH_WEST, Direction.WEST, Direction.NORTH_WEST};

@@ -6,14 +6,14 @@ import battlecode.common.*;
 
 public class Protocol {
 
-    // add string messages that you want to use here
+    // TODO: add string messages that you want to use here. Don't delete or move default.
     public static String[] messages = new String[] {
         "default",
         "go to location",
         "enemy spotted at location",
-        "something else",
         "construct PASTR",
-        "construct Noisetower"
+        "construct Noisetower",
+        "wear a hat"
         };
     
     // reading methods
