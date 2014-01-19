@@ -12,6 +12,9 @@ public class MapBuilder {
     
     public static int[][] gameMap = new int[mapWidth][mapHeight];
     
+    public static MapLocation[] openLocs = new MapLocation[mapWidth*mapHeight];
+    public static MapLocation[] roadLocs = new MapLocation[mapWidth*mapHeight];
+    
     /**
      * contains the representation of the map, and methods for soldiers to broadcast new information to
      * the map representation, such as enemy Soldier/PASTR/HQ/Noisetower locations, 
@@ -41,19 +44,25 @@ public class MapBuilder {
     */
     public static void buildMap() throws GameActionException {
         int value = 1;
+        
+        int openCount = 0;
+        int roadCount = 0;
+        
         for (int x = 0; x < mapWidth; x++) {
             for (int y = 0; y < mapHeight; y++) {
                 MapLocation m = new MapLocation(x,y);
                 TerrainTile tile = rc.senseTerrainTile(m);
                 switch (tile) {
-                case NORMAL : value = 0; break;
+                case NORMAL : value = 0; openLocs[openCount] = m; openCount++; break;
                 case OFF_MAP : value = 2; break;
-                case ROAD : value = 3; break;
+                case ROAD : value = 3; openLocs[openCount] = m; openCount++; roadLocs[roadCount] = m; roadCount++; break;
                 case VOID : value = 2; break;
                 }
                 writeMap(m, value);
             }
         }
+        openLocs = Util.trimNullPoints(openLocs, openCount);
+        roadLocs = Util.trimNullPoints(roadLocs, roadCount);
         RobotPlayer.mapReady = true;
     }
     

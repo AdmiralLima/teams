@@ -20,6 +20,9 @@ public class RRT {
     private int numVertices = 0;
     private Path[][] pathTo = new Path[mapWidth][mapHeight];
     
+    private static MapLocation[] openLocs = MapBuilder.openLocs;
+    private static MapLocation[] roadLocs = MapBuilder.roadLocs;
+    
     public RRT(MapLocation start, MapLocation goal) {
         this.start = start;
         this.goal = goal;
@@ -39,11 +42,26 @@ public class RRT {
     public static MapLocation[] getPath(MapLocation start, MapLocation goal, int range) {
         RRT tree = new RRT(start, goal);
         
+        int openLen = openLocs.length;
+        
         MapLocation newLoc = start;
         
         while (newLoc.distanceSquaredTo(goal) > range) {
-            System.out.println("searching...");
-            MapLocation randomLoc = Util.randomLoc();
+            MapLocation randomLoc;
+            int spread = 20;
+            int threshold = 5;
+            int loc = rand.nextInt(100);
+            if (loc < 30) { // near goal
+                randomLoc = new MapLocation(goal.x + (rand.nextInt(spread) - rand.nextInt(spread)), goal.y + rand.nextInt(spread) - rand.nextInt(spread));
+            } else if (loc < 30) { // near start
+                randomLoc = new MapLocation(start.x + (rand.nextInt(spread) - rand.nextInt(spread)), start.y + rand.nextInt(spread) - rand.nextInt(spread));
+            } else { // random
+                //int bc = Clock.getBytecodeNum();
+                randomLoc = openLocs[rand.nextInt(openLen)];
+                //System.out.println("openLocs[rand.nextInt(openLen)] used " + (Clock.getBytecodeNum() - bc) + " bc");
+                //randomLoc = Util.randomLoc(); // why does this line work better than choosing an openLoc?????
+                //System.out.println("Util.randomLoc() used " + (Clock.getBytecodeNum() - bc) + " bc");
+            }
             // TODO: check that randomLoc is not in an obstacle
             MapLocation near = tree.nearestVertex(randomLoc);
             MapLocation[] feasible = feasible(near, randomLoc);
@@ -60,13 +78,11 @@ public class RRT {
         MapLocation[] nextPath = tree.pathTo[parent.x][parent.y].path; 
         
         while (parent != null && !parent.equals(start)) {
-            System.out.println("working back from " + next.toString());
             nextPath = tree.pathTo[parent.x][parent.y].path;
             path = Util.join(nextPath, path);
             next = parent;
             parent = tree.getParent[next.x][next.y];
         }
-        System.out.println("Done!");
         
         return path;
     }

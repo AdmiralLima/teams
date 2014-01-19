@@ -32,13 +32,13 @@ public class Comm {
                 MapLocation[] path = Nav.getPath(rc.getLocation(), m);
                 System.out.println("Nav.getPath used " + ((Clock.getRoundNum() - round)*10000 + (Clock.getBytecodeNum() - bc)) + " bc");
             //MapLocation[] path = new MapLocation[] {new MapLocation(5,9),new MapLocation(6,10),new MapLocation(7,11),new MapLocation(8,12),new MapLocation(9,13),new MapLocation(10,14)}; 
-                for (int i = 0; i < path.length; i++) {
-                    if (path[i]!=null) {
-                        System.out.println("path at step " + i + " is " + path[i].toString());
-                    } else {
-                        System.out.println("path at step " + i + " is null");
-                    }
-                }
+//                for (int i = 0; i < path.length; i++) {
+//                    if (path[i]!=null) {
+//                        System.out.println("path at step " + i + " is " + path[i].toString());
+//                    } else {
+//                        System.out.println("path at step " + i + " is null");
+//                    }
+//                }
                 String stringPath = RRT.stringPath(path);
                 System.out.println(stringPath);
                 Nav.followPath(path);
