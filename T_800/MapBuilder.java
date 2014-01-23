@@ -12,8 +12,8 @@ public class MapBuilder {
     
     public static int[][] gameMap = new int[mapWidth][mapHeight];
     
-    public static MapLocation[] openLocs = new MapLocation[mapWidth*mapHeight];
-    public static MapLocation[] roadLocs = new MapLocation[mapWidth*mapHeight];
+    public static MapLocation[] openLocs;
+    public static MapLocation[] roadLocs;
     
     /**
      * contains the representation of the map, and methods for soldiers to broadcast new information to
@@ -43,6 +43,9 @@ public class MapBuilder {
      * 
     */
     public static void buildMap() throws GameActionException {
+        openLocs = new MapLocation[mapWidth*mapHeight];
+        roadLocs = new MapLocation[mapWidth*mapHeight];
+        
         int value = 1;
         
         int openCount = 0;

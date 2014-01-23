@@ -67,23 +67,17 @@ public class RRT {
         goalBranch[0] = goal;
         MapLocation point = tree.nearestVertex(goal);
         // need to check that this is feasible
-        int it = 1;
+        int goalcount = 1;
         while (point != null) {
-            goalBranch[it] = point;
+            goalBranch[goalcount] = point;
             point = tree.getParent[point.x][point.y];
-            it++;
+            goalcount++;
         }
-        goalBranch = Util.trimNullPoints(goalBranch, it);
-        // print
-//        System.out.println("goalBranch is: ");
-//        for (MapLocation goalpoint : goalBranch) {
-//            System.out.println("     " + goalpoint.toString());
-//        }
-        //System.out.println(stringPath(goalBranch));
+        goalBranch = Util.trimNullPoints(goalBranch, goalcount);
         
         // initialise waypoints and get first vertex
         MapLocation[] waypoints = new MapLocation[100];
-        int count = 0;        
+        int count = 0;
         MapLocation nearest = tree.nearestVertex(start);
         MapLocation[] feasible = feasible(nearest, start);
         
@@ -97,9 +91,10 @@ public class RRT {
         
         MapLocation near = nearest;    
         while (near!=null) {
+            // add near to waypoints
             waypoints[count] = near;
             count++;
-            System.out.println("failure. trying near: " + near.toString());
+            
             int nearGoalIndex = tree.nearestVertexIndex(goalBranch, near);
             MapLocation nearGoal = goalBranch[nearGoalIndex];
             System.out.println("trying nearGoal: " + nearGoal.toString());
@@ -114,7 +109,9 @@ public class RRT {
                 }
                 break;
             } else {
+                // set new near
                 near = tree.getParent[near.x][near.y];
+                System.out.println("failure. trying near: " + near.toString());
             }
         }
         
