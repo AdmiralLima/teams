@@ -209,8 +209,7 @@ public class RRT {
 
             int nextInt = MapBuilder.readMap(next);
             // check that the next location is either empty or a road
-            canMove = (nextInt == 0 || nextInt == 3);
-            
+            canMove = ((nextInt == 0) || (nextInt == 3));
             if (canMove) {
                 path[i] = next;
                 if (next.equals(child)) {
