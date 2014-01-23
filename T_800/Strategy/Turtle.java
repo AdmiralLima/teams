@@ -71,6 +71,7 @@ public class Turtle implements Strategy {
     @Override
     public void runPASTR() throws GameActionException {
         // chill my neezy
+        Comm.PASTRReadMessages();
     }
 
     @Override

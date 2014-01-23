@@ -51,18 +51,18 @@ public class RobotPlayer
 	            int bc = Clock.getBytecodeNum();
 	            int round = Clock.getRoundNum();
 	            MapBuilder.buildMap();
-	            System.out.println("MapBuilder.buildMap() used " + ((Clock.getRoundNum() - round)*10000 + (Clock.getBytecodeNum() - bc)) + " bc");
+	            //System.out.println("MapBuilder.buildMap() used " + ((Clock.getRoundNum() - round)*10000 + (Clock.getBytecodeNum() - bc)) + " bc");
 
 	            tree = new RRT(rc.senseHQLocation(), 100);
 	            //String rrt = RRT.stringPath(tree.vertices);
 	            //System.out.println(rrt);
 	            
-	            MapLocation[] waypoints = Nav.getWaypoints(MapBuilder.openLocs[RobotPlayer.rand.nextInt(MapBuilder.openLocs.length)], rc.senseEnemyHQLocation());
-	            for (MapLocation waypoint : waypoints) {
-	                System.out.println("waypoint : " + waypoint.toString());
-	            }
-	            String paywoints = RRT.stringPath(waypoints);
-	            System.out.println(paywoints);
+//	            MapLocation[] waypoints = Nav.getWaypoints(MapBuilder.openLocs[RobotPlayer.rand.nextInt(MapBuilder.openLocs.length)], rc.senseEnemyHQLocation());
+//	            for (MapLocation waypoint : waypoints) {
+//	                System.out.println("waypoint : " + waypoint.toString());
+//	            }
+//	            String paywoints = RRT.stringPath(waypoints);
+//	            System.out.println(paywoints);
 
 	        } catch (GameActionException e1) {
 	            // TODO Auto-generated catch block
@@ -86,6 +86,13 @@ public class RobotPlayer
                 while (rc.getActionDelay() > 0 || !rc.isActive()) {}
                 //System.out.println("here with " + rc.getActionDelay() + " action delay and rc.isActive(): " + rc.isActive());
                 T_800.Complex.Spawn.spawn();
+                while (rc.getActionDelay() > 0 || !rc.isActive() || Clock.getRoundNum() < 150) {}
+                nearby = rc.senseNearbyGameObjects(Robot.class, 2, rc.getTeam());
+                soldier = Util.getARobotOfType(RobotType.SOLDIER, nearby);
+                if (soldier != null) {
+                    System.out.println("ordering soldier to move");
+                    Comm.orderMove(soldier, rc.senseEnemyHQLocation());
+                }
             } catch (GameActionException e) {
                 e.printStackTrace();
             }

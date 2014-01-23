@@ -11,10 +11,13 @@ public class Protocol {
         "default",
         "go to location",
         "enemy spotted at location",
+        "current location",
         "construct PASTR",
         "construct Noisetower",
         "request path to location",
+        "go to waypoint",
         "reached waypoint",
+        "reached destination",
         "wear a hat"
         };
     

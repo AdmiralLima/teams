@@ -79,7 +79,7 @@ public class RRT {
 //        for (MapLocation goalpoint : goalBranch) {
 //            System.out.println("     " + goalpoint.toString());
 //        }
-        System.out.println(stringPath(goalBranch));
+        //System.out.println(stringPath(goalBranch));
         
         // initialise waypoints and get first vertex
         MapLocation[] waypoints = new MapLocation[100];
@@ -220,9 +220,9 @@ public class RRT {
                     path = Util.trimNullPoints(path, i+1);
                     return path;
                 }
+            } else {
+                return null;
             }
-            
-
         }
         return null;
     }

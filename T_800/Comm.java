@@ -12,42 +12,35 @@ public class Comm {
      * @throws GameActionException 
      */
     public static void SoldierFollowOrders() throws GameActionException {
+        Robot soldier = rc.getRobot();
+        
      // read broadcasted orders from HQ
         Pair orders = Protocol.readMessage(rc.getRobot());
         MapLocation m = orders.location;
         String order = orders.message;
         
+        rc.setIndicatorString(0, order);
+        rc.setIndicatorString(1, m.toString());
+        
         int orderNum = 0;
-        if (order.equals("go to location")) {orderNum = 1;}
+        if (order.equals("go to waypoint")) {orderNum = 1;}
         else if (order.equals("construct PASTR")) {orderNum = 2;}
         else if (order.equals("construct Noisetower")) {orderNum = 3;}
+        else if (order.equals("go to location")) {orderNum = 4;}
         
         switch (orderNum) {
         case 0 : break;// be ready to attack enemies
-        case 1 : // move toward goal location and swarm
-            // TODO : put in better movement algorithm !!
-            Direction moveTo = rc.getLocation().directionTo(m);
-            T_800.Basic.Move.move(moveTo);
-            /*
-            if (!done) {
-                int bc = Clock.getBytecodeNum();
-                int round = Clock.getRoundNum();
-                MapLocation[] path = Nav.getPath(rc.getLocation(), m);
-                System.out.println("Nav.getPath used " + ((Clock.getRoundNum() - round)*10000 + (Clock.getBytecodeNum() - bc)) + " bc");
-            //MapLocation[] path = new MapLocation[] {new MapLocation(5,9),new MapLocation(6,10),new MapLocation(7,11),new MapLocation(8,12),new MapLocation(9,13),new MapLocation(10,14)}; 
-//                for (int i = 0; i < path.length; i++) {
-//                    if (path[i]!=null) {
-//                        System.out.println("path at step " + i + " is " + path[i].toString());
-//                    } else {
-//                        System.out.println("path at step " + i + " is null");
-//                    }
-//                }
-                String stringPath = RRT.stringPath(path);
-                System.out.println(stringPath);
-                Nav.followPath(path);
-                done = true;
+        case 1 : // move toward waypoint
+            MapLocation currentLoc = rc.getLocation(); 
+            if (currentLoc.distanceSquaredTo(m) < 2) { 
+                reachedWaypoint(soldier,m);
+                Protocol.broadcastToRobot(soldier, "default");
+                System.out.println("reached waypoint " + m.toString());
+            } else {
+                Direction moveTo = currentLoc.directionTo(m);
+                T_800.Basic.Move.move(moveTo);
             }
-            */
+            // and swarm?
 //            rc.yield();
 //            if (rc.isActive()) {T_800.Complex.Swarm.swarm();}
             break;
@@ -58,6 +51,11 @@ public class Comm {
         case 3 : // construct Noisetower
             rc.setIndicatorString(0, "constructing NOISETOWER");
             rc.construct(RobotType.NOISETOWER);
+            break;
+        case 4 : // get path to location
+            requestPath(soldier, m);
+            System.out.println("Soldier requesting path to " + m.toString());
+            Protocol.broadcastToRobot(soldier, "default");
             break;
         default : break; // chill
         }
@@ -111,6 +109,9 @@ public class Comm {
         Protocol.broadcastToRobot(soldier, 1, "request path to location", goal);
         Protocol.broadcastToRobot(soldier, 2, "current location", current);
     }
+    public static void requestPath(Robot soldier, MapLocation goal) throws GameActionException {
+        requestPath(soldier, rc.getLocation(), goal);
+    }
     public static void reachedWaypoint(Robot soldier, MapLocation m) throws GameActionException {
         Protocol.broadcastToRobot(soldier, 1, "reached waypoint", m);
     }
@@ -122,7 +123,7 @@ public class Comm {
      * @throws GameActionException
      */
     public static void sendWaypoint(Robot soldier, MapLocation waypoint) throws GameActionException {
-        Protocol.broadcastToRobot(soldier, 0, "go to location", waypoint);
+        Protocol.broadcastToRobot(soldier, 0, "go to waypoint", waypoint);
     }
     
     public static void PASTRReadMessages() throws GameActionException {
@@ -133,6 +134,31 @@ public class Comm {
                 Pair shit = Protocol.readMessage(soldier, 1);
                 String message = shit.message;
                 MapLocation m = shit.location;
+                
+                if (message.equals("reached waypoint")) {
+                    MapLocation next = Nav.nextWaypoint(soldier);
+                    // give the soldier his next waypoint (null if at destination)
+                    if (next != null) {
+                        sendWaypoint(soldier,next);
+                    }
+                }
+                else if (message.equals("request path to location")) {
+                    // compute path and send first waypoint
+                    Pair current = Protocol.readMessage(soldier, 2);
+                    if (current.message.equals("current location")) {
+                        MapLocation currentLoc = current.location;
+                        // get path from RRT
+                        MapLocation[] path = Nav.getWaypoints(currentLoc, m);
+                        // store robot and path
+                        Nav.addRobot(soldier, path);
+                        // get next waypoint. defaults to start of path. shouldnt be null
+                        MapLocation next = Nav.nextWaypoint(soldier);
+                        sendWaypoint(soldier, next);
+                    }
+                }
+                else if (message.equals("reached destination")) {
+                    Protocol.broadcastToRobot(soldier, "default");
+                }
             }
         }
     }
