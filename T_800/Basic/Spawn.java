@@ -19,13 +19,16 @@ public class Spawn
 	 */
 	public static boolean spawnDirection(Direction tryThis) throws GameActionException
 	{
+		MapLocation newLocation = rc.getLocation().add(tryThis);
+		TerrainTile newTerrain = rc.senseTerrainTile(newLocation);
 		
 		// We try to spawn in the given location.
-		if (rc.senseObjectAtLocation(rc.getLocation().add(tryThis)) == null)
+		if (rc.senseObjectAtLocation(newLocation) == null && newTerrain != TerrainTile.OFF_MAP && newTerrain != TerrainTile.VOID)
 		{
 			rc.spawn(tryThis);
 			T_800.RobotPlayer.newUnits = true;
 			return true;
+			
 		}
 		return false;
 	}
