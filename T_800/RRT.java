@@ -12,79 +12,113 @@ public class RRT {
     public static int mapHeight = RobotPlayer.mapHeight;
     public static int mapWidth = RobotPlayer.mapWidth;
     
-    private MapLocation start;
-    private MapLocation goal;
+    public MapLocation start;
     
-    private MapLocation[] vertices; // a list of vertices in order of added
-    private MapLocation[][] getParent; // getParent[x][y] returns the MapLocation that is the parent of (x,y)
-    private int numVertices = 0;
-    private Path[][] pathTo = new Path[mapWidth][mapHeight];
+    public MapLocation[] vertices; // a list of vertices in order of added
+    public MapLocation[][] getParent; // getParent[x][y] returns the MapLocation that is the parent of (x,y)
+    public int numVertices = 0;
+    public Path[][] pathTo = new Path[mapWidth][mapHeight];
     
-    private static MapLocation[] openLocs = MapBuilder.openLocs;
-    private static MapLocation[] roadLocs = MapBuilder.roadLocs;
+    public static MapLocation[] openLocs = MapBuilder.openLocs;
+    public static MapLocation[] roadLocs = MapBuilder.roadLocs;
     
-    public RRT(MapLocation start, MapLocation goal) {
+    public RRT(MapLocation start, int iterations) {
         this.start = start;
-        this.goal = goal;
         
         vertices = new MapLocation[mapWidth*mapHeight];
         getParent = new MapLocation[mapWidth][mapHeight];
         vertices[0] = start;
         numVertices = 1;
-    }
-    
-    // TODO: make a way of prettily printing out the path that the RRT gets for debugging purposes
-    
-    public static MapLocation[] getPath(MapLocation start, MapLocation goal) {
-        return getPath(start, goal, 5);
-    }
-    
-    public static MapLocation[] getPath(MapLocation start, MapLocation goal, int range) {
-        RRT tree = new RRT(start, goal);
         
+        buildTree(this, iterations);
+    }
+    
+    public static RRT buildTree(RRT tree, int iterations) {
         int openLen = openLocs.length;
         
-        MapLocation newLoc = start;
+        int count = 0;
         
-        while (newLoc.distanceSquaredTo(goal) > range) {
-            MapLocation randomLoc;
-            int spread = 20;
-            int threshold = 5;
-            int loc = rand.nextInt(100);
-            if (loc < 30) { // near goal
-                randomLoc = new MapLocation(goal.x + (rand.nextInt(spread) - rand.nextInt(spread)), goal.y + rand.nextInt(spread) - rand.nextInt(spread));
-            } else if (loc < 30) { // near start
-                randomLoc = new MapLocation(start.x + (rand.nextInt(spread) - rand.nextInt(spread)), start.y + rand.nextInt(spread) - rand.nextInt(spread));
-            } else { // random
-                //int bc = Clock.getBytecodeNum();
-                randomLoc = openLocs[rand.nextInt(openLen)];
-                //System.out.println("openLocs[rand.nextInt(openLen)] used " + (Clock.getBytecodeNum() - bc) + " bc");
-                //randomLoc = Util.randomLoc(); // why does this line work better than choosing an openLoc?????
-                //System.out.println("Util.randomLoc() used " + (Clock.getBytecodeNum() - bc) + " bc");
-            }
+        MapLocation newLoc = tree.start;
+        
+        while (count < iterations) {
+            MapLocation randomLoc = openLocs[rand.nextInt(openLen)];
             // TODO: check that randomLoc is not in an obstacle
             MapLocation near = tree.nearestVertex(randomLoc);
             MapLocation[] feasible = feasible(near, randomLoc);
             
             if (feasible != null && !near.equals(randomLoc)) {
                 newLoc = randomLoc;
-                tree.add(newLoc, near, feasible);                
+                tree.add(newLoc, near, feasible);       
+                count++;
             }
         }
-        // after the loop breaks newLoc is equal to the location within range of the goal
-        MapLocation next = newLoc;
-        MapLocation[] path = tree.pathTo[newLoc.x][newLoc.y].path;
-        MapLocation parent = tree.getParent[newLoc.x][newLoc.y];
-        MapLocation[] nextPath = tree.pathTo[parent.x][parent.y].path; 
         
-        while (parent != null && !parent.equals(start)) {
-            nextPath = tree.pathTo[parent.x][parent.y].path;
-            path = Util.join(nextPath, path);
-            next = parent;
-            parent = tree.getParent[next.x][next.y];
+        return tree;
+    }
+    
+//    public static MapLocation[] getPath(MapLocation start, MapLocation goal) {
+//        return getPath(start, goal, 5);
+//    }
+    
+    public static MapLocation[] getPath(RRT tree, MapLocation start, MapLocation goal) {
+        System.out.println("start is: " + start.toString());
+        // generate goal branch
+        MapLocation[] goalBranch = new MapLocation[100];
+        goalBranch[0] = goal;
+        MapLocation point = tree.nearestVertex(goal);
+        // need to check that this is feasible
+        int it = 1;
+        while (point != null) {
+            goalBranch[it] = point;
+            point = tree.getParent[point.x][point.y];
+            it++;
+        }
+        goalBranch = Util.trimNullPoints(goalBranch, it);
+        // print
+//        System.out.println("goalBranch is: ");
+//        for (MapLocation goalpoint : goalBranch) {
+//            System.out.println("     " + goalpoint.toString());
+//        }
+        System.out.println(stringPath(goalBranch));
+        
+        // initialise waypoints and get first vertex
+        MapLocation[] waypoints = new MapLocation[100];
+        int count = 0;        
+        MapLocation nearest = tree.nearestVertex(start);
+        MapLocation[] feasible = feasible(nearest, start);
+        
+        if (feasible != null) {
+            System.out.println("nearest is " + nearest.toString() + " and is feasible");
+            waypoints[count] = nearest;
+            count++;
+        } else {
+            System.out.println("RRT.getPath(): nearest vertex can't be reached");
         }
         
-        return path;
+        MapLocation near = nearest;    
+        while (near!=null) {
+            waypoints[count] = near;
+            count++;
+            System.out.println("failure. trying near: " + near.toString());
+            int nearGoalIndex = tree.nearestVertexIndex(goalBranch, near);
+            MapLocation nearGoal = goalBranch[nearGoalIndex];
+            System.out.println("trying nearGoal: " + nearGoal.toString());
+            MapLocation[] crossBranchFeasible = feasible(near, nearGoal);
+            if (crossBranchFeasible != null) {
+                System.out.println("success!");
+                waypoints[count] = nearGoal;
+                count++;
+                for (int i = nearGoalIndex; i >= 0 ; i--) {
+                    waypoints[count] = goalBranch[i];
+                    count++;
+                }
+                break;
+            } else {
+                near = tree.getParent[near.x][near.y];
+            }
+        }
+        
+        return Util.trimNullPoints(waypoints, count);
     }
     
     /**
@@ -121,6 +155,36 @@ public class RRT {
         }
         return nearest;
     }
+    /**
+     * Gets the nearest vertex to a given maplocation, on a given branch
+     */
+    public MapLocation nearestVertex(MapLocation[] branch, MapLocation child) {
+      //System.out.println("numVertices = " + numVertices + " and vertices = " + vertices[0] + " " + vertices[1]);
+        MapLocation nearest = branch[0];
+        int nearestDist = nearest.distanceSquaredTo(child);
+        for (MapLocation next : branch) {
+            int nextDist = next.distanceSquaredTo(child);
+            if (nextDist < nearestDist) {
+                nearest = next;
+                nearestDist = nextDist;
+            }
+        }
+        return nearest;
+    }
+    public int nearestVertexIndex(MapLocation[] branch, MapLocation child) {
+        //System.out.println("numVertices = " + numVertices + " and vertices = " + vertices[0] + " " + vertices[1]);
+          int nearest = 0;
+          int nearestDist = branch[nearest].distanceSquaredTo(child);
+          for (int i = 1; i < branch.length; i++) {
+              MapLocation next = branch[i];
+              int nextDist = next.distanceSquaredTo(child);
+              if (nextDist < nearestDist) {
+                  nearest = i;
+                  nearestDist = nextDist;
+              }
+          }
+          return nearest;
+      }
     
     /**
      * returns the beeline path from the parent to the child as a list of MapLocations.
@@ -131,6 +195,9 @@ public class RRT {
      * @return
      */
     public static MapLocation[] feasible(MapLocation parent, MapLocation child) {
+        if (parent.equals(child)) {
+            return new MapLocation[] {parent};
+        }
         //TODO: this seems to be allowing paths that pass through obstacles
         int guessLength = 200;
         

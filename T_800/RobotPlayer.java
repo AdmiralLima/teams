@@ -19,6 +19,8 @@ public class RobotPlayer
     public static boolean newUnits;
     public static boolean mapReady;
     
+    public static RRT tree;
+    
     
 	private static Strategy currentStrategy;
 	
@@ -41,27 +43,50 @@ public class RobotPlayer
 		RobotType ourType = thisRC.getType();
 	    currentStrategy = new Turtle(thisRC);
 	    ///////
-	    Protocol.init();
+	    Protocol.init();	    
 	    
 	    // build map representation
-        try {
-            int bc = Clock.getBytecodeNum();
-            int round = Clock.getRoundNum();
-            MapBuilder.buildMap();
-            System.out.println("MapBuilder.buildMap() used " + ((Clock.getRoundNum() - round)*10000 + (Clock.getBytecodeNum() - bc)) + " bc");
-            //String map = MapBuilder.stringMap();
-            //System.out.println(map);
-        } catch (GameActionException e1) {
-            // TODO Auto-generated catch block
-            e1.printStackTrace();
-        }
+	    if (ourType == RobotType.PASTR) {
+	        try {
+	            int bc = Clock.getBytecodeNum();
+	            int round = Clock.getRoundNum();
+	            MapBuilder.buildMap();
+	            System.out.println("MapBuilder.buildMap() used " + ((Clock.getRoundNum() - round)*10000 + (Clock.getBytecodeNum() - bc)) + " bc");
+
+	            tree = new RRT(rc.senseHQLocation(), 100);
+	            //String rrt = RRT.stringPath(tree.vertices);
+	            //System.out.println(rrt);
+	            
+	            MapLocation[] waypoints = Nav.getWaypoints(MapBuilder.openLocs[RobotPlayer.rand.nextInt(MapBuilder.openLocs.length)], rc.senseEnemyHQLocation());
+	            for (MapLocation waypoint : waypoints) {
+	                System.out.println("waypoint : " + waypoint.toString());
+	            }
+	            String paywoints = RRT.stringPath(waypoints);
+	            System.out.println(paywoints);
+
+	        } catch (GameActionException e1) {
+	            // TODO Auto-generated catch block
+	            e1.printStackTrace();
+	        }
+	    }
 
 	    
 	    if (ourType == RobotType.HQ) {
 	        try {
-                rc.spawn(Direction.EAST);
+	            if (!T_800.Basic.Spawn.spawnDirection(rc.getLocation().directionTo(rc.senseEnemyHQLocation()).opposite())) {
+	                T_800.Complex.Spawn.spawn();
+	            }
+                rc.yield();
+                Robot[] nearby = rc.senseNearbyGameObjects(Robot.class, 2, rc.getTeam());
+                Robot soldier = Util.getARobotOfType(RobotType.SOLDIER, nearby);
+                if (soldier != null) {
+                    Comm.orderConstruct(soldier, RobotType.PASTR);
+                }
+                // HQ must have no action delay and be active at the same time
+                while (rc.getActionDelay() > 0 || !rc.isActive()) {}
+                //System.out.println("here with " + rc.getActionDelay() + " action delay and rc.isActive(): " + rc.isActive());
+                T_800.Complex.Spawn.spawn();
             } catch (GameActionException e) {
-                // TODO Auto-generated catch block
                 e.printStackTrace();
             }
 	    }
