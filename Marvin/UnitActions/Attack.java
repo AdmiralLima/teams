@@ -106,7 +106,6 @@ public class Attack
 			rc.selfDestruct();
 			return true;
 		}
-		
 		return false;
 	}
 }

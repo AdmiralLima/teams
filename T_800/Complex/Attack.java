@@ -131,4 +131,53 @@ public class Attack
 		}
 		return false;
 	}
+	
+	/**
+	 * This method will attack a random enemy within range.  If there are not enemies within 
+	 * range it will attempt to deal splash damage to units just outside of range.  FOR USE
+	 * BY HQ ONLY.
+	 * 
+	 * @return boolean - Returns true if a successful attack was made.
+	 * @throws GameActionException
+	 */
+	public static boolean splashAttack() throws GameActionException
+	{
+		Robot[] enemies = rc.senseNearbyGameObjects(Robot.class, RobotType.HQ.sensorRadiusSquared, rc.getTeam().opponent());
+		if (enemies.length > 0)
+		{
+			MapLocation rcLocation = rc.getLocation();
+			MapLocation enemyLocation;
+			
+			// First we try to attack enemies within range.
+			for (Robot enemy : enemies)
+			{
+				enemyLocation = rc.senseRobotInfo(enemy).location;
+				if (rcLocation.distanceSquaredTo(enemyLocation) < RobotType.HQ.attackRadiusMaxSquared)
+				{
+					if (rc.canAttackSquare(enemyLocation))
+					{
+						rc.attackSquare(enemyLocation);
+						return true;
+					}
+				}
+			}
+			MapLocation splashLocation;
+			
+			// Next we try to deal splash damage.
+			for (Robot enemy : enemies)
+			{
+				enemyLocation = rc.senseRobotInfo(enemy).location;
+				splashLocation = enemyLocation.subtract(rcLocation.directionTo(enemyLocation));
+				if (rcLocation.distanceSquaredTo(splashLocation) < RobotType.HQ.attackRadiusMaxSquared)
+				{
+					if (rc.canAttackSquare(splashLocation))
+					{
+						rc.attackSquare(splashLocation);
+						return true;
+					}
+				}
+			}
+		}
+		return false;
+	}
 }
