@@ -13,28 +13,66 @@ public class Protocol {
         "enemy spotted at location",
         "construct PASTR",
         "construct Noisetower",
+        "request path to location",
+        "reached waypoint",
         "wear a hat"
         };
     
+    // channel methods
+    // channel 0 is used for communications TO the soldier
+    // channel 1 is used for communications FROM the soldier (i.e. to the HQ or PASTR)
+    // channel 2 is used for the soldier to indicate their current location
+    /**
+     * 
+     * @param robot
+     * @param relay can be 0-9
+     * @return
+     */
+    public static int getChannel(Robot robot, int relay) {
+        return robot.getID()*10+relay;
+    }
+    public static int getChannel(Robot robot) {
+        return getChannel(robot,0);
+    }
+//    public static Robot getRobot(int channel) {
+//        return rc.channel%10;
+//    }
+    
     // reading methods
-    public static Pair readMessage(Robot robot) throws GameActionException {
-        String[] message = decode(rc.readBroadcast(robot.getID()));
+    /**
+     * 
+     * @param robot
+     * @param relay can be 0 (to soldier), 1 (from soldier), 2-9 (shared info)
+     * @return
+     * @throws GameActionException
+     */
+    public static Pair readMessage(Robot robot, int relay) throws GameActionException {
+        String[] message = decode(rc.readBroadcast(getChannel(robot, relay)));
         MapLocation m = new MapLocation(Integer.parseInt(message[1]),Integer.parseInt(message[2]));
         return new Pair(message[0], m);
+    }
+    public static Pair readMessage(Robot robot) throws GameActionException {
+        return readMessage(robot, 0);
     }
     
     // messaging methods
     /**
-     * sends a message, maplocation to an invididual robot
+     * sends a message, maplocation to an individual robot
      * @param robot
      * @param message
      * @throws GameActionException
      */
     public static void broadcastToRobot(Robot robot, String message) throws GameActionException {
-        rc.broadcast(robot.getID(), encode(message));
+        rc.broadcast(getChannel(robot), encode(message));
     }
     public static void broadcastToRobot(Robot robot, String message, MapLocation m) throws GameActionException {
-        rc.broadcast(robot.getID(), encode(message, m));
+        rc.broadcast(getChannel(robot), encode(message, m));
+    }
+    public static void broadcastToRobot(Robot robot, int relay, String message, MapLocation m) throws GameActionException {
+        rc.broadcast(getChannel(robot, relay), encode(message, m));
+    }
+    public static void broadcastToRobot(Robot robot, int relay, String message) throws GameActionException {
+        rc.broadcast(getChannel(robot,relay), encode(message));
     }
     
     /**

@@ -11,7 +11,7 @@ public class Comm {
      * method for soldiers to follow orders
      * @throws GameActionException 
      */
-    public static void followOrders() throws GameActionException {
+    public static void SoldierFollowOrders() throws GameActionException {
      // read broadcasted orders from HQ
         Pair orders = Protocol.readMessage(rc.getRobot());
         MapLocation m = orders.location;
@@ -26,6 +26,9 @@ public class Comm {
         case 0 : break;// be ready to attack enemies
         case 1 : // move toward goal location and swarm
             // TODO : put in better movement algorithm !!
+            Direction moveTo = rc.getLocation().directionTo(m);
+            T_800.Basic.Move.move(moveTo);
+            /*
             if (!done) {
                 int bc = Clock.getBytecodeNum();
                 int round = Clock.getRoundNum();
@@ -44,13 +47,16 @@ public class Comm {
                 Nav.followPath(path);
                 done = true;
             }
+            */
 //            rc.yield();
 //            if (rc.isActive()) {T_800.Complex.Swarm.swarm();}
             break;
         case 2 : // construct PASTR
+            rc.setIndicatorString(0, "constructing PASTR");
             rc.construct(RobotType.PASTR);
             break;
         case 3 : // construct Noisetower
+            rc.setIndicatorString(0, "constructing NOISETOWER");
             rc.construct(RobotType.NOISETOWER);
             break;
         default : break; // chill
@@ -93,6 +99,42 @@ public class Comm {
      */
     public static void orderMove(RobotType type, MapLocation m) throws GameActionException {
         Protocol.broadcastToRobotsOfType(type, "go to location", m);
+    }
+    
+    /**
+     * method for soldiers to request a path from the NavPASTR (broadcasts to soldier's relay #1)
+     * @param soldier
+     * @param m
+     * @throws GameActionException
+     */
+    public static void requestPath(Robot soldier, MapLocation current, MapLocation goal) throws GameActionException {
+        Protocol.broadcastToRobot(soldier, 1, "request path to location", goal);
+        Protocol.broadcastToRobot(soldier, 2, "current location", current);
+    }
+    public static void reachedWaypoint(Robot soldier, MapLocation m) throws GameActionException {
+        Protocol.broadcastToRobot(soldier, 1, "reached waypoint", m);
+    }
+    
+    /** method for PASTR to send waypoints to a soldier
+     * 
+     * @param soldier
+     * @param waypoint
+     * @throws GameActionException
+     */
+    public static void sendWaypoint(Robot soldier, MapLocation waypoint) throws GameActionException {
+        Protocol.broadcastToRobot(soldier, 0, "go to location", waypoint);
+    }
+    
+    public static void PASTRReadMessages() throws GameActionException {
+        Robot[] soldiers = rc.senseBroadcastingRobots();
+        Team friend = rc.getTeam();
+        for (Robot soldier : soldiers) {
+            if (soldier.getTeam().equals(friend)) {
+                Pair shit = Protocol.readMessage(soldier, 1);
+                String message = shit.message;
+                MapLocation m = shit.location;
+            }
+        }
     }
 
 }
