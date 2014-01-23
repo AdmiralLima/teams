@@ -28,4 +28,14 @@ public class Attack
 		}
 		return false;
 	}
+	
+	public static boolean suicide(MapLocation killThis) throws GameActionException
+	{
+		if (rc.getLocation().distanceSquaredTo(killThis) < 3)
+		{
+			rc.selfDestruct();
+			return true;
+		}
+		return false;
+	}
 }
