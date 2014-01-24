@@ -52,31 +52,21 @@ public class Turtle implements Strategy {
     @Override
     public void runNOISETOWER() throws GameActionException {
         // TODO
-        // radially drag in cows to the PASTR
-        int maxDistance = (int) Math.sqrt(RobotType.NOISETOWER.attackRadiusMaxSquared);
-        int currentDistance = maxDistance;
-        Direction direction = Direction.NORTH_EAST;
-        
-        MapLocation attackThis = rc.getLocation().add(direction, currentDistance);
-        // How do we herd?
-        if (currentDistance > 1)
-        {
-            if (rc.canAttackSquare(attackThis))
-            {
-                rc.attackSquare(attackThis);
+        int max = (int) Math.sqrt(RobotType.NOISETOWER.attackRadiusMaxSquared);
+        int min = (int) Math.sqrt(RobotType.NOISETOWER.attackRadiusMinSquared);
+        MapLocation here = rc.getLocation();
+        MapBuilder.buildMap();
+        for (Direction dir : MapBuilder.directions) {
+            for (int rad = max; rad >= 0; rad--) {
+                MapLocation attackThis = here.add(dir, rad);
+                MapLocation[] feasible = RRT.feasible(attackThis, here);
+                if (rc.canAttackSquare(attackThis) && rc.isActive() && (feasible != null)) {
+                    rc.attackSquare(attackThis);
+                    //System.out.println(max + ", " + min);
+                    rc.yield();
+                    while (rc.getActionDelay() > 0) {}
+                }
             }
-            currentDistance = currentDistance - 2;
-            rc.yield();
-            runNOISETOWER();
-        }
-        
-        // Now we need to reset our herding.
-        else 
-        {
-            currentDistance = maxDistance;
-            direction = direction.rotateRight();
-            rc.yield();
-            this.runNOISETOWER();
         }
     }
 
