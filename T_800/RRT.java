@@ -95,21 +95,24 @@ public class RRT {
             waypoints[count] = near;
             count++;
             
+            // get nearest vertex on goal branch
             int nearGoalIndex = tree.nearestVertexIndex(goalBranch, near);
             MapLocation nearGoal = goalBranch[nearGoalIndex];
             System.out.println("trying nearGoal: " + nearGoal.toString());
+            
+            // check if it can be reached
             MapLocation[] crossBranchFeasible = feasible(near, nearGoal);
-            if (crossBranchFeasible != null) {
+            if (crossBranchFeasible != null) { // can be reached, so add it to the waypoints
                 System.out.println("success!");
                 waypoints[count] = nearGoal;
                 count++;
-                for (int i = nearGoalIndex; i >= 0 ; i--) {
+                for (int i = nearGoalIndex; i >= 0 ; i--) { // then add the rest of the vertices on the branch leading up to the goal
                     waypoints[count] = goalBranch[i];
                     count++;
                 }
                 break;
             } else {
-                // set new near
+                // set new near further back up current branch
                 near = tree.getParent[near.x][near.y];
                 System.out.println("failure. trying near: " + near.toString());
             }
@@ -196,7 +199,7 @@ public class RRT {
             return new MapLocation[] {parent};
         }
         //TODO: this seems to be allowing paths that pass through obstacles
-        int guessLength = 200;
+        int guessLength = 100;
         
         MapLocation next = parent;
         MapLocation[] path = new MapLocation[guessLength];
@@ -216,8 +219,6 @@ public class RRT {
                     path = Util.trimNullPoints(path, i+1);
                     return path;
                 }
-            } else {
-                return null;
             }
         }
         return null;
