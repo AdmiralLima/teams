@@ -36,9 +36,10 @@ public class Spawn
 		{
 			
 			// Now we need to check if we can spawn in the given direction.
-			if (rc.senseObjectAtLocation(rc.getLocation().add(thisDirection)) == null)
+			if (rc.senseObjectAtLocation(rc.getLocation().add(thisDirection)) == null && rc.senseTerrainTile(rc.getLocation().add(thisDirection)) != TerrainTile.VOID && rc.senseTerrainTile(rc.getLocation().add(thisDirection)) != TerrainTile.OFF_MAP)
 			{
 				rc.spawn(thisDirection);
+				return true;
 			}
 		}
 		
@@ -100,7 +101,7 @@ public class Spawn
     		for (int i = 0; i < 7; i++)
     		{
     			spawnDirection = spawnDirection.rotateRight();
-                if (rc.senseObjectAtLocation(rc.getLocation().add(spawnDirection)) == null) 
+                if (rc.senseObjectAtLocation(rc.getLocation().add(spawnDirection)) == null && rc.senseTerrainTile(rc.getLocation().add(spawnDirection)) != TerrainTile.VOID && rc.senseTerrainTile(rc.getLocation().add(spawnDirection)) != TerrainTile.OFF_MAP) 
                 {
                     rc.spawn(spawnDirection);
                     return true;

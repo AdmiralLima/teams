@@ -9,7 +9,6 @@ public class Micro
 	
 	public static boolean execute() throws GameActionException
 	{
-		int bc = Clock.getBytecodeNum();
 		// Find friends and enemies
 		Robot[] enemies = rc.senseNearbyGameObjects(Robot.class, RobotType.SOLDIER.sensorRadiusSquared, rc.getTeam().opponent());
 		Robot[] friends = rc.senseNearbyGameObjects(Robot.class, RobotType.SOLDIER.sensorRadiusSquared, rc.getTeam());
@@ -35,9 +34,7 @@ public class Micro
 			{
 				friendlyS ++;
 			}
-		}
-		System.out.println(Clock.getBytecodeNum() - bc);
-		
+		}		
 		// Run away if injured
 		if (rc.getHealth() < RobotType.SOLDIER.maxHealth*0.25)
 		{

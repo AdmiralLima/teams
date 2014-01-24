@@ -34,11 +34,11 @@ public class NOISETOWERControl
 		// How do we herd?
 		if (currentDistance > 1)
 		{
-			if (rc.canAttackSquare(attackThis))
+			if (rc.canAttackSquare(attackThis) && rc.isActive())
 			{
 				rc.attackSquare(attackThis);
 			}
-			currentDistance = currentDistance - 2;
+			currentDistance = currentDistance - 1;
 			rc.yield();
 			this.runNOISETOWER();
 		}
