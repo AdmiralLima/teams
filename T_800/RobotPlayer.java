@@ -88,8 +88,8 @@ public class RobotPlayer
                 soldier = Util.getARobotOfType(RobotType.SOLDIER, nearby);
                 if (soldier != null) {
                     System.out.println("ordering soldier to move");
-                    //Comm.orderMove(soldier, rc.senseEnemyHQLocation());
-                    Comm.orderMove(soldier, new MapLocation(31,26));
+                    Comm.orderMove(soldier, rc.senseEnemyHQLocation());
+                    //Comm.orderMove(soldier, new MapLocation(31,26));
                 }
                 
                 while (rc.getActionDelay() > 0 || !rc.isActive() || !Protocol.readMessage(soldier, 0).message.equals("reached destination")) {}
