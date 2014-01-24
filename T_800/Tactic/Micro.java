@@ -59,9 +59,12 @@ public class Micro
 		{
 			
 			// Flight
-			if (T_800.Basic.Move.move(rc.senseRobotInfo(enemies[0]).direction.opposite()))
+			if (enemies.length > 0)
 			{
-				return true;
+				if (T_800.Basic.Move.move(rc.senseRobotInfo(enemies[0]).direction.opposite()))
+				{
+					return true;
+				}
 			}
 		}
 		return false;
