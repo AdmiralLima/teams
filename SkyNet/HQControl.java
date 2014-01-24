@@ -80,6 +80,8 @@ public class HQControl
 		
 		if (ourMilk - myMilk > theirMilk - badMilk)
 		{
+			myMilk = ourMilk;
+			badMilk = theirMilk;
 			communicator.yellGoalLocation(PASTRs[PASTRs.length - 1], 1);
 			return;
 		}
