@@ -64,8 +64,9 @@ public class Turtle implements Strategy {
     @Override
     public void runSOLDIER() throws GameActionException {
         // TODO
-        Comm.SoldierFollowOrders();
-        
+        if (!T_800.Tactic.Micro.execute()) {
+            Comm.SoldierFollowOrders();
+        }
     }
 
     @Override

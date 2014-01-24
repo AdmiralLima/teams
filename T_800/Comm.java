@@ -149,6 +149,7 @@ public class Comm {
                         MapLocation currentLoc = current.location;
                         // get path from RRT
                         MapLocation[] path = Nav.getWaypoints(currentLoc, m);
+                        System.out.println(RRT.stringPath(path));
                         // store robot and path
                         Nav.addRobot(soldier, path);
                         // get next waypoint. defaults to start of path. shouldnt be null
@@ -156,7 +157,7 @@ public class Comm {
                         sendWaypoint(soldier, next);
                     }
                 }
-                else if (message.equals("reached destination")) {
+                else {
                     Protocol.broadcastToRobot(soldier, "default");
                 }
             }
