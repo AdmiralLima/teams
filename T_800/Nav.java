@@ -28,7 +28,11 @@ public class Nav {
      */
     public static MapLocation nextWaypoint(Robot soldier) throws GameActionException {
         MapLocation[] waypoints = paths.get(soldier);
-        int step = steps.get(soldier).intValue();
+        Integer stepInt = steps.get(soldier);
+        if (stepInt == null) {
+            return null;
+        }
+        int step = stepInt.intValue();
         if (step < waypoints.length-1) {
             step++;
             steps.put(soldier, Integer.valueOf(step));
