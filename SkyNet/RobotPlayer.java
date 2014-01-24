@@ -63,7 +63,7 @@ public class RobotPlayer
     				// Lets run our HQ.
     				if (ourType.equals(RobotType.HQ))
     				{
-    					thisRC.attackSquare(thisRC.getLocation().add(Direction.EAST));
+    					HQ.runHQ();
     					thisRC.yield();
     				}
     				

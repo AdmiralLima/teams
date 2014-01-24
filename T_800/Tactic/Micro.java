@@ -9,14 +9,19 @@ public class Micro
 	
 	public static boolean execute() throws GameActionException
 	{
-
+		int bc = Clock.getBytecodeNum();
 		// Find friends and enemies
 		Robot[] enemies = rc.senseNearbyGameObjects(Robot.class, RobotType.SOLDIER.sensorRadiusSquared, rc.getTeam().opponent());
 		Robot[] friends = rc.senseNearbyGameObjects(Robot.class, RobotType.SOLDIER.sensorRadiusSquared, rc.getTeam());
 		
+		if (enemies.length == 0)
+		{
+			return false;
+		}
+		
 		// We need to know number of SOLDIER
 		int enemyS = 0;
-		int friendlyS = 0;
+		int friendlyS = 1;
 		for (Robot enemy : enemies)
 		{
 			if (rc.senseRobotInfo(enemy).type == RobotType.SOLDIER)
@@ -31,14 +36,16 @@ public class Micro
 				friendlyS ++;
 			}
 		}
+		System.out.println(Clock.getBytecodeNum() - bc);
 		
 		// Run away if injured
 		if (rc.getHealth() < RobotType.SOLDIER.maxHealth*0.25)
 		{
 			if (enemies.length > 0)
 			{
-				if (T_800.Basic.Move.move(rc.senseRobotInfo(enemies[0]).direction.opposite()))
+				if (T_800.Basic.Move.move(rc.getLocation().directionTo(rc.senseRobotInfo(enemies[0]).location).opposite()))
 				{
+					
 					return true;
 				}
 			}
@@ -51,9 +58,16 @@ public class Micro
 			// Fight
 			if (!T_800.Complex.Attack.attackWeakest())
 			{
+				if (enemies.length > 0)
+				{
+					if (T_800.Basic.Move.move(rc.getLocation().directionTo(rc.senseRobotInfo(enemies[0]).location)))
+					{
+						return true;
+					}
+				}
 				return false;
 			}
-			return true;
+
 		}
 		else
 		{
@@ -61,7 +75,7 @@ public class Micro
 			// Flight
 			if (enemies.length > 0)
 			{
-				if (T_800.Basic.Move.move(rc.senseRobotInfo(enemies[0]).direction.opposite()))
+				if (T_800.Basic.Move.move(rc.getLocation().directionTo(rc.senseRobotInfo(enemies[0]).location).opposite()))
 				{
 					return true;
 				}

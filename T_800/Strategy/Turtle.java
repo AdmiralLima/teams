@@ -58,14 +58,17 @@ public class Turtle implements Strategy {
 //        }
         
         // now spawn guys
-        //T_800.Tactic.AttackAndSpawn.execute();
+        T_800.Tactic.AttackAndSpawn.execute();
     }
 
     @Override
     public void runSOLDIER() throws GameActionException {
         // TODO
         if (!T_800.Tactic.Micro.execute()) {
-            Comm.SoldierFollowOrders();
+        	if (rc.isActive())
+        	{
+        		Comm.SoldierFollowOrders();
+        	}
         }
     }
 
