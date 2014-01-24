@@ -82,7 +82,9 @@ public class HQControl
 		{
 			myMilk = ourMilk;
 			badMilk = theirMilk;
-			communicator.yellGoalLocation(PASTRs[PASTRs.length - 1], 1);
+			if (PASTRs.length > 0) {
+			    communicator.yellGoalLocation(PASTRs[PASTRs.length - 1], 1);
+			}
 			return;
 		}
 		

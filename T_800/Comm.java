@@ -35,7 +35,7 @@ public class Comm {
             if (currentLoc.distanceSquaredTo(m) < 2) { 
                 reachedWaypoint(soldier,m);
                 //Protocol.broadcastToRobot(soldier, "default");
-                System.out.println("reached waypoint " + m.toString());
+                //System.out.println("reached waypoint " + m.toString());
             } else {
                 Direction moveTo = currentLoc.directionTo(m);
                 T_800.Basic.Move.move(moveTo);
@@ -54,7 +54,7 @@ public class Comm {
             break;
         case 4 : // get path to location
             requestPath(soldier, m);
-            System.out.println("Soldier requesting path to " + m.toString());
+            //System.out.println("Soldier requesting path to " + m.toString());
             Protocol.broadcastToRobot(soldier, "default");
             break;
         default : break; // chill
@@ -152,7 +152,7 @@ public class Comm {
                         MapLocation currentLoc = current.location;
                         // get path from RRT
                         MapLocation[] path = Nav.getWaypoints(currentLoc, m);
-                        System.out.println(RRT.stringPath(path));
+                        //System.out.println(RRT.stringPath(path));
                         // store robot and path
                         Nav.addRobot(soldier, path);
                         // get next waypoint. defaults to start of path. shouldnt be null

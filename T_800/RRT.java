@@ -61,7 +61,7 @@ public class RRT {
 //    }
     
     public static MapLocation[] getPath(RRT tree, MapLocation start, MapLocation goal) {
-        System.out.println("start is: " + start.toString());
+        //System.out.println("start is: " + start.toString());
         // generate goal branch
         MapLocation[] goalBranch = new MapLocation[100];
         goalBranch[0] = goal;
@@ -82,11 +82,11 @@ public class RRT {
         MapLocation[] feasible = feasible(nearest, start);
         
         if (feasible != null) {
-            System.out.println("nearest is " + nearest.toString() + " and is feasible");
+            //System.out.println("nearest is " + nearest.toString() + " and is feasible");
             waypoints[count] = nearest;
             count++;
         } else {
-            System.out.println("RRT.getPath(): nearest vertex can't be reached");
+            //System.out.println("RRT.getPath(): nearest vertex can't be reached");
         }
         
         MapLocation near = nearest;    
@@ -98,12 +98,12 @@ public class RRT {
             // get nearest vertex on goal branch
             int nearGoalIndex = tree.nearestVertexIndex(goalBranch, near);
             MapLocation nearGoal = goalBranch[nearGoalIndex];
-            System.out.println("trying nearGoal: " + nearGoal.toString());
+            //System.out.println("trying nearGoal: " + nearGoal.toString());
             
             // check if it can be reached
             MapLocation[] crossBranchFeasible = feasible(near, nearGoal);
             if (crossBranchFeasible != null) { // can be reached, so add it to the waypoints
-                System.out.println("success!");
+                //System.out.println("success!");
                 waypoints[count] = nearGoal;
                 count++;
                 for (int i = nearGoalIndex; i >= 0 ; i--) { // then add the rest of the vertices on the branch leading up to the goal
@@ -114,7 +114,7 @@ public class RRT {
             } else {
                 // set new near further back up current branch
                 near = tree.getParent[near.x][near.y];
-                System.out.println("failure. trying near: " + near.toString());
+                //System.out.println("failure. trying near: " + near.toString());
             }
         }
         

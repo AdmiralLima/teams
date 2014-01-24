@@ -15,7 +15,17 @@ public class Micro
 		
 		if (enemies.length == 0)
 		{
-			return false;
+		     // Maybe we should build a PASTR.
+	            if (rc.senseCowGrowth()[rc.getLocation().x][rc.getLocation().y] > 0.9)
+	            {
+	                MapLocation[] PASTRs = rc.sensePastrLocations(rc.getTeam());
+	                if (PASTRs.length < 2) {
+	                    rc.construct(RobotType.PASTR);
+	                    return true;
+	                } else {
+	                    return false;
+	                }
+	            }
 		}
 		
 		// We need to know number of SOLDIER
