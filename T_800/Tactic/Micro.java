@@ -36,7 +36,7 @@ public class Micro
 				friendlyS ++;
 			}
 		}
-		System.out.println(Clock.getBytecodeNum() - bc);
+		//System.out.println(Clock.getBytecodeNum() - bc);
 		
 		// Run away if injured
 		if (rc.getHealth() < RobotType.SOLDIER.maxHealth*0.25)

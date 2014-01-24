@@ -81,18 +81,7 @@ public class RobotPlayer
                 }
                 // HQ must have no action delay and be active at the same time
                 while (rc.getActionDelay() > 0 || !rc.isActive()) {} // wait
-                T_800.Complex.Spawn.spawn();
-                
-                while (rc.getActionDelay() > 0 || !rc.isActive() || Clock.getRoundNum() < 150) {} // wait
-                nearby = rc.senseNearbyGameObjects(Robot.class, 2, rc.getTeam());
-                soldier = Util.getARobotOfType(RobotType.SOLDIER, nearby);
-                if (soldier != null) {
-                    System.out.println("ordering soldier to move");
-                    Comm.orderMove(soldier, rc.senseEnemyHQLocation());
-                    //Comm.orderMove(soldier, new MapLocation(31,26));
-                }
-                
-                
+                T_800.Complex.Spawn.spawn();                
                 
             } catch (GameActionException e) {e.printStackTrace();}
 	    }

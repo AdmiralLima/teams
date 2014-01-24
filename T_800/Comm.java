@@ -34,7 +34,7 @@ public class Comm {
             MapLocation currentLoc = rc.getLocation(); 
             if (currentLoc.distanceSquaredTo(m) < 2) { 
                 reachedWaypoint(soldier,m);
-                Protocol.broadcastToRobot(soldier, "default");
+                //Protocol.broadcastToRobot(soldier, "default");
                 System.out.println("reached waypoint " + m.toString());
             } else {
                 Direction moveTo = currentLoc.directionTo(m);
@@ -95,8 +95,8 @@ public class Comm {
      * @param m
      * @throws GameActionException
      */
-    public static void orderMove(RobotType type, MapLocation m) throws GameActionException {
-        Protocol.broadcastToRobotsOfType(type, "go to location", m);
+    public static void orderAllMove(MapLocation m) throws GameActionException {
+        Protocol.broadcastToRobotsOfType(RobotType.SOLDIER, "go to location", m);
     }
     
     /**
@@ -135,6 +135,9 @@ public class Comm {
                 String message = shit.message;
                 MapLocation m = shit.location;
                 
+                rc.setIndicatorString(0, message);
+                rc.setIndicatorString(1, m.toString());
+                
                 if (message.equals("reached waypoint")) {
                     MapLocation next = Nav.nextWaypoint(soldier);
                     // give the soldier his next waypoint (null if at destination)
@@ -158,7 +161,7 @@ public class Comm {
                     }
                 }
                 else {
-                    Protocol.broadcastToRobot(soldier, "default");
+                    //Protocol.broadcastToRobot(soldier, "default");
                 }
             }
         }
