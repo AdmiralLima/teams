@@ -28,11 +28,11 @@ public class Protocol {
     /**
      * 
      * @param robot
-     * @param relay can be 0-9
+     * @param relay can be 0-4
      * @return
      */
     public static int getChannel(Robot robot, int relay) {
-        return robot.getID()*10+relay;
+        return robot.getID()*5+relay;
     }
     public static int getChannel(Robot robot) {
         return getChannel(robot,0);
@@ -45,7 +45,7 @@ public class Protocol {
     /**
      * 
      * @param robot
-     * @param relay can be 0 (to soldier), 1 (from soldier), 2-9 (shared info)
+     * @param relay can be 0 (to soldier), 1 (from soldier), 2 (soldier's location), 3-4 (shared info)
      * @return
      * @throws GameActionException
      */

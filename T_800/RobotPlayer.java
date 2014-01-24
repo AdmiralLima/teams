@@ -92,8 +92,8 @@ public class RobotPlayer
                     //Comm.orderMove(soldier, new MapLocation(31,26));
                 }
                 
-                while (rc.getActionDelay() > 0 || !rc.isActive() || !Protocol.readMessage(soldier, 0).message.equals("reached destination")) {}
-                Comm.orderMove(soldier, new MapLocation(25, 25));
+                
+                
             } catch (GameActionException e) {e.printStackTrace();}
 	    }
 	    		
