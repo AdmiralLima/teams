@@ -248,4 +248,77 @@ public class Attack
 		// If we did not find any enemies to attack we need to let the caller know.
 		return false;
 	}
+	
+	public boolean attackWeakest() throws GameActionException
+	{
+		Robot[] nearbyEnemies = rc.senseNearbyGameObjects(Robot.class, rc.getType().attackRadiusMaxSquared, rc.getTeam().opponent());
+
+		if (nearbyEnemies.length > 0)
+		{
+			// We need to find the weakest enemy.
+			MapLocation weakestLocation = null;
+			RobotInfo enemyInfo;
+			double minHealthFraction = 1.1;
+			double healthFraction;
+			for (Robot possible : nearbyEnemies)
+			{
+				enemyInfo = rc.senseRobotInfo(possible);
+				healthFraction = enemyInfo.health / enemyInfo.type.maxHealth;
+				if (healthFraction < minHealthFraction && enemyInfo.type != RobotType.HQ)
+				{
+					minHealthFraction = healthFraction;
+					weakestLocation = enemyInfo.location;
+				}
+			}
+		
+			// If we found one lets try to kill it.
+			if (minHealthFraction < 1.1 && rc.canAttackSquare(weakestLocation))
+			{
+				rc.attackSquare(weakestLocation);
+				return true;
+			}
+		}
+		return false;
+	}
+	
+	public boolean splashAttack() throws GameActionException
+	{
+		Robot[] enemies = rc.senseNearbyGameObjects(Robot.class, RobotType.HQ.sensorRadiusSquared, rc.getTeam().opponent());
+		if (enemies.length > 0)
+		{
+			MapLocation rcLocation = rc.getLocation();
+			MapLocation enemyLocation;
+			
+			// First we try to attack enemies within range.
+			for (Robot enemy : enemies)
+			{
+				enemyLocation = rc.senseRobotInfo(enemy).location;
+				if (rcLocation.distanceSquaredTo(enemyLocation) < RobotType.HQ.attackRadiusMaxSquared)
+				{
+					if (rc.canAttackSquare(enemyLocation))
+					{
+						rc.attackSquare(enemyLocation);
+						return true;
+					}
+				}
+			}
+			MapLocation splashLocation;
+			
+			// Next we try to deal splash damage.
+			for (Robot enemy : enemies)
+			{
+				enemyLocation = rc.senseRobotInfo(enemy).location;
+				splashLocation = enemyLocation.subtract(rcLocation.directionTo(enemyLocation));
+				if (rcLocation.distanceSquaredTo(splashLocation) < RobotType.HQ.attackRadiusMaxSquared)
+				{
+					if (rc.canAttackSquare(splashLocation))
+					{
+						rc.attackSquare(splashLocation);
+						return true;
+					}
+				}
+			}
+		}
+		return false;
+	}
 }

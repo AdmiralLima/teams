@@ -41,17 +41,31 @@ public class SOLDIERControl
 	public void runSOLDIER() throws GameActionException
 	{
 		
-		// If we are hurt we should run away.
-		if (rc.getHealth() < RobotType.SOLDIER.maxHealth*0.15)
+		// Lets do a little setup.
+		int attackRange = rc.senseRobotInfo(rc.getRobot()).type.sensorRadiusSquared;
+		Class<Robot> robotClass = Robot.class;
+		Team enemyTeam = rc.getTeam().opponent();
+		
+		// Now we can actually find the enemies that are within range.
+		Robot[] nearbyEnemies = rc.senseNearbyGameObjects(robotClass, attackRange, enemyTeam);
+		
+		// Maybe we should build a PASTR.
+		if (nearbyEnemies.length == 0)
 		{
-			
-			// Lets do a little setup.
-			int attackRange = rc.senseRobotInfo(rc.getRobot()).type.attackRadiusMaxSquared;
-			Class<Robot> robotClass = Robot.class;
-			Team enemyTeam = rc.getTeam().opponent();
-			
-			// Now we can actually find the enemies that are within range.
-			Robot[] nearbyEnemies = rc.senseNearbyGameObjects(robotClass, attackRange, enemyTeam);
+			if (rc.senseCowGrowth()[rc.getLocation().x][rc.getLocation().y] > 0.9)
+			{
+				MapLocation[] PASTRs = rc.sensePastrLocations(rc.getTeam());
+				if (PASTRs.length < 2)
+				{
+					rc.construct(RobotType.PASTR);
+					return;
+				}
+			}
+		}
+		
+		// If we are hurt we should run away.
+		if (rc.getHealth() < RobotType.SOLDIER.maxHealth*0.25)
+		{
 			
 			// Now lets run the **** away before we die.
 			if (nearbyEnemies.length > 0)
@@ -66,7 +80,7 @@ public class SOLDIERControl
 		}
 		
 		// If we can attack something we should.
-		else if (!attacker.attackRandomRobotNotEnemyHQ())
+		else if (!attacker.attackWeakest())
 		{
 			
 			// If we have somewhere important to go we should go there.

@@ -15,6 +15,8 @@ public class HQControl
 	private Attack attacker;
 	private Spawn spawner;
 	private Communicate communicator;
+	private double myMilk = 0;
+	private double badMilk = 0;
 	
 	/**
 	 * This constructor simply takes the HQ that we will be controlling.
@@ -40,17 +42,23 @@ public class HQControl
 	{
 		if (rc.senseRobotCount() < 1)
 		{
-			spawner.spawnDirection(rc.getLocation().directionTo(rc.senseEnemyHQLocation()).opposite());
+			if (!spawner.spawnDirection(rc.getLocation().directionTo(rc.senseEnemyHQLocation()).opposite()))
+			{
+				spawner.spawn();
+			}
 			return;
 		}
 		if (rc.senseRobotCount() < 2)
 		{
-			spawner.spawnDirection(rc.getLocation().directionTo(rc.senseEnemyHQLocation()).opposite().rotateRight());
+			if (!spawner.spawnDirection(rc.getLocation().directionTo(rc.senseEnemyHQLocation()).opposite().rotateRight()))
+			{
+				spawner.spawn();
+			}
 			return;
 		}
 		
 		// First lets attack anything if possible.
-		if (!attacker.attackRandomRobotNotEnemyHQ())
+		if (!attacker.splashAttack())
 		{
 			spawner.spawn();
 		}
@@ -65,9 +73,19 @@ public class HQControl
 		
 		// Lets find enemy PASTRs to kill.
 		MapLocation[] killThese = rc.sensePastrLocations(rc.getTeam().opponent());
+		MapLocation[] PASTRs = rc.sensePastrLocations(rc.getTeam());
+
+		double ourMilk = rc.senseTeamMilkQuantity(rc.getTeam());
+		double theirMilk = rc.senseTeamMilkQuantity(rc.getTeam().opponent());
+		
+		if (ourMilk - myMilk > theirMilk - badMilk)
+		{
+			communicator.yellGoalLocation(PASTRs[PASTRs.length - 1], 1);
+			return;
+		}
 		
 		// We need to give our soldiers a goal.
-		if (killThese.length > 0)
+		else if (killThese.length > 0)
 		{
 			communicator.yellGoalLocation(killThese[0], 1);
 			return;
