@@ -35,6 +35,7 @@ public class Micro
 				friendlyS ++;
 			}
 		}		
+
 		// Run away if injured
 		if (rc.getHealth() < RobotType.SOLDIER.maxHealth*0.25)
 		{

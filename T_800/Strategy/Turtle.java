@@ -18,45 +18,16 @@ public class Turtle implements Strategy {
 
     @Override
     public void runHQ() throws GameActionException {
-//        if (RobotPlayer.mapReady) {
-//            MapLocation oldGoal = T_800.RobotPlayer.goal;
-//
-//            /////// set new goal here ///////
-//
-//            //MapLocation newGoal = new MapLocation(15,15);
-//            MapLocation newGoal = rc.senseEnemyHQLocation();
-//            T_800.RobotPlayer.goal = newGoal;
-//
-//            /////////////////////////////////
-//
-//            if (!oldGoal.equals(newGoal) || T_800.RobotPlayer.newUnits) {
-//                Comm.orderMove(RobotType.SOLDIER, newGoal);
-//            }
-//        }
+        T_800.Complex.Construct.needConstructs();
+        //Comm.orderAllMove(rc.senseEnemyHQLocation());
         
-        // set new orders for team
-            // if there is no pastr and/or noisetower near hq, get a soldier to build one
-        Robot[] nearby = rc.senseNearbyGameObjects(Robot.class, 2, rc.getTeam());
-                // check if there is a noisetower within squareradius of 1
-        //for (Robot robot : nearby) {System.out.println(robot.toString());}
-        Robot soldier = Util.getARobotOfType(RobotType.SOLDIER, nearby);
-        
-//        if (Util.containsRobotOfType(RobotType.NOISETOWER, nearby)) {
-//                    // if so, check if there is a pastr within squareradius of 1
-            if (Util.containsRobotOfType(RobotType.PASTR, nearby)) {
-            } else {
-                // if not, tell next soldier within sqrad=1 to construct pastr
-                if (soldier != null) {
-                    //Comm.orderConstruct(soldier, RobotType.PASTR);
-                }
+        if (Clock.getRoundNum() > 120) {
+            MapLocation[] pastrs = rc.sensePastrLocations(rc.getTeam().opponent());
+            if (pastrs.length > 0) {
+                Comm.orderAllMove(pastrs[0]);
             }
-//        } else {
-//            // if not, tell next soldier within sqrad=1 to construct noistwr
-//            if (soldier != null) {
-//                Comm.orderConstruct(soldier, RobotType.NOISETOWER);
-//            }
-//        }
-        
+        }
+
         // now spawn guys
         T_800.Tactic.AttackAndSpawn.execute();
     }

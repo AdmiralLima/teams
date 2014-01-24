@@ -97,7 +97,7 @@ public class Protocol {
         for (Robot robot : robots) {
             RobotType thistype = rc.senseRobotInfo(robot).type;
             if (type.equals(thistype)) {
-                rc.broadcast(robot.getID(), code);
+                rc.broadcast(getChannel(robot), code);
             }
         }
     }
