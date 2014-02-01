@@ -20,6 +20,8 @@ public class Protocol {
         "reached destination",
         "use RRT",
         "RRT ready",
+        "change strategy: turtle",
+        "change strategy: aggressive",
         "wear a hat"
         };
     
@@ -28,6 +30,7 @@ public class Protocol {
     // channel 1 is used for communications FROM the soldier (i.e. to the HQ or PASTR)
     // channel 2 is used for the soldier to indicate their current location
     // channel 3 is used by the PASTR to tell the soldier which Nav algorithm to use
+    // channel 4 is used to change strategy
     /**
      * 
      * @param robot

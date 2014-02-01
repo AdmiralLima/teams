@@ -1,5 +1,7 @@
 package team005;
 
+import team005.Strategy.Strategy;
+import team005.Strategy.Strategy.Strategies;
 import battlecode.common.*;
 
 public class Comm {
@@ -37,8 +39,7 @@ public class Comm {
                 //Protocol.broadcastToRobot(soldier, "default");
                 //System.out.println("reached waypoint " + m.toString());
             } else {
-                Direction moveTo = currentLoc.directionTo(m);
-                team005.Basic.Move.move(moveTo);
+                RobotPlayer.slugger.slug(m);
             }
             // and swarm?
 //            rc.yield();
@@ -58,6 +59,7 @@ public class Comm {
                 //System.out.println("Soldier requesting path to " + m.toString());
                 Protocol.broadcastToRobot(soldier, "default");
             } else {
+                rc.setIndicatorString(0, "slugging");
                 RobotPlayer.slugger.slug(m);
                 rc.yield();
                 if (rc.isActive()) {team005.Complex.Swarm.swarm();}
@@ -103,6 +105,30 @@ public class Comm {
      */
     public static void orderAllMove(MapLocation m) throws GameActionException {
         Protocol.broadcastToRobotsOfType(RobotType.SOLDIER, "go to location", m);
+    }
+    
+    /**
+     * method for HQ to tell soldiers which strategy to use
+     * @throws GameActionException 
+     */
+    public static void changeStrategy(Strategy strat) throws GameActionException {
+        if (strat.getStrategy() == Strategies.TURTLE) {
+            Protocol.broadcastToRobotsOfType(RobotType.SOLDIER, 4, "change strategy: turtle");
+        } else if (strat.getStrategy() == Strategies.AGGRESSIVE) {
+            Protocol.broadcastToRobotsOfType(RobotType.SOLDIER, 4, "change strategy: aggressive");
+        }
+    }
+    /**
+     * method for soldiers to check which strategy to use
+     * @throws GameActionException 
+     */
+    public static void checkStrategy(Robot soldier) throws GameActionException {
+        Pair shit = Protocol.readMessage(soldier, 4);
+        if (shit.message.equals("change strategy: turtle")) {
+            RobotPlayer.currentStrategy = RobotPlayer.turtle;
+        } else if (shit.message.equals("change strategy: aggressive")) {
+            RobotPlayer.currentStrategy = RobotPlayer.aggr;
+        }
     }
     
     /**

@@ -43,7 +43,11 @@ public class Swarm
 	
 	public static boolean swarm() throws GameActionException
 	{
-		Robot[] friends = rc.senseNearbyGameObjects(Robot.class, 10000, rc.getTeam());
-		return swarm(friends);
+		Robot[] friends = rc.senseNearbyGameObjects(Robot.class, 50, rc.getTeam());
+		if (friends.length < 11) { // limit swarm size
+		    return swarm(friends);
+		} else {
+		    return false;
+		}
 	}
 }

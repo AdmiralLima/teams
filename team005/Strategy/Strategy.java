@@ -11,7 +11,7 @@ public interface Strategy
 {
 	public static enum Strategies
 	{
-		TURTLE;
+		TURTLE, AGGRESSIVE;
 	}
 	
 	/**

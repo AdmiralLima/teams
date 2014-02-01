@@ -22,10 +22,20 @@ public class RobotPlayer
     public static boolean mapReady;
     public static Slug slugger;
     
+    // milk projections
+    public static double ourMilk;
+    public static double theirMilk;
+    public static double ourMilkNew;
+    public static double theirMilkNew;
+    public static double ourWinRound;
+    public static double theirWinRound;
+    
     public static RRT tree;
     
     
-	private static Strategy currentStrategy;
+	public static Strategy currentStrategy;
+	public static Turtle turtle;
+	public static Aggressive aggr;
 	
 	/**
 	 * This method is executed at the beginning of a unit's life and 
@@ -44,7 +54,9 @@ public class RobotPlayer
         newUnits = false;
         ///////
 		RobotType ourType = thisRC.getType();
-	    currentStrategy = new Turtle(thisRC);
+		turtle = new Turtle(thisRC);
+		aggr = new Aggressive(thisRC);
+	    currentStrategy = turtle;
 	    ///////
 	    Protocol.init();	    
 	    
@@ -93,7 +105,17 @@ public class RobotPlayer
                 }
                 // HQ must have no action delay and be active at the same time
                 while (rc.getActionDelay() > 0 || !rc.isActive()) {} // wait
-                team005.Complex.Spawn.spawn();                
+                team005.Complex.Spawn.spawn();     
+                rc.yield();
+                    nearby = rc.senseNearbyGameObjects(Robot.class, 2, rc.getTeam());
+                    soldier = Util.getARobotOfType(RobotType.SOLDIER, nearby);
+                    if (soldier != null) {
+                        Comm.orderConstruct(soldier, RobotType.NOISETOWER);
+                    }
+                
+                
+                ourMilk = rc.senseTeamMilkQuantity(rc.getTeam());
+                theirMilk = rc.senseTeamMilkQuantity(rc.getTeam().opponent());
                 
             } catch (GameActionException e) {e.printStackTrace();}
 	    }
@@ -113,6 +135,25 @@ public class RobotPlayer
 	    			{
 	    				try
 	    				{
+	    				    ourMilkNew = rc.senseTeamMilkQuantity(rc.getTeam());
+	    				    theirMilkNew = rc.senseTeamMilkQuantity(rc.getTeam().opponent());
+	    				    
+	    				    // calculation of ourMilkNew and theirMilkNew
+	    				    ourWinRound = (GameConstants.WIN_QTY - ourMilkNew)/(ourMilkNew - ourMilk);
+	    				    theirWinRound = (GameConstants.WIN_QTY - theirMilkNew)/(theirMilkNew - theirMilk);
+	    				    
+	    				    if (theirWinRound > ourWinRound) {
+	    				        currentStrategy = aggr;
+	    				    } else if (ourWinRound >= theirWinRound) {
+	    				        currentStrategy = turtle;
+	    				    }
+	    				    // broadcast new strat to soldiers
+	    				    Comm.changeStrategy(currentStrategy);
+	    				    rc.setIndicatorString(1, currentStrategy.toString());
+	    				    
+	    				    ourMilk = ourMilkNew;
+	    				    theirMilk = theirMilkNew;
+	    				    
 	    					currentStrategy.runHQ();
 	    				}
 	    				catch (Exception e)
@@ -126,6 +167,9 @@ public class RobotPlayer
 	    			{
 	    				try
 	    				{
+	    				    // update strategy
+	    				    Comm.checkStrategy(thisRC.getRobot());
+	    				    
 	    					currentStrategy.runSOLDIER();
 	    				}
 	    				catch (Exception e)
